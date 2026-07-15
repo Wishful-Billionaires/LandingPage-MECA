@@ -2259,7 +2259,7 @@ export default function App() {
             <h2 className="bottom-cta-h">{s("bottomH")}</h2>
             <p className="bottom-cta-p">{s("bottomP")}</p>
             <WaitingForm lang={lang} dark={true} />
-            <a href="mailto:hello@meca.app" className="cta-email">hello@meca.app</a>
+            <a href="mailto:info@meca-app.com" className="cta-email">info@meca-app.com</a>
           </div>
         </div>
 
