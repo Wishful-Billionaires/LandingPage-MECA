@@ -42,7 +42,6 @@ const style = `
   }
   .meca-nav .inner { display:flex; align-items:center; justify-content:space-between; }
   .nav-logo { display:flex; align-items:center; gap:0.5rem; }
-  .nav-logo-icon { width:32px; height:32px; background:var(--primary); border-radius:8px; display:flex; align-items:center; justify-content:center; font-weight:900; color:#000; font-size:18px; }
   .nav-logo-text { font-weight:900; font-size:18px; letter-spacing:-0.02em; }
   .nav-links { display:flex; gap:2rem; }
   .nav-links a { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); transition:color 0.2s; }
@@ -1625,7 +1624,6 @@ export default function App() {
       <nav className="meca-nav">
         <div className="wrap inner">
           <div className="nav-logo">
-            <div className="nav-logo-icon">M</div>
             <span className="nav-logo-text">MECA</span>
           </div>
           <div className="nav-links">
