@@ -21,7 +21,7 @@ const style = `
   }
   .meca-root * { box-sizing: border-box; margin: 0; padding: 0; }
   .meca-root a { text-decoration: none; color: inherit; }
-  .comp-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .comp-scroll { width: 100%; }
 
   .fade-in { animation: fadeIn 0.8s ease both; }
   .fade-in-2 { animation: fadeIn 0.8s 0.2s ease both; }
@@ -747,15 +747,13 @@ const style = `
   }
 
   /* COMPETITION */
-  .comp-table { width:100%; border-collapse:collapse; border:1px solid rgba(255,255,255,0.05); border-radius:16px; overflow:hidden; margin-top:2rem; }
-  .comp-table thead tr { background:rgba(255,255,255,0.02); }
-  .comp-table th { padding:1.25rem 1.5rem; text-align:left; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.15em; color:var(--accent); border-bottom:1px solid rgba(255,255,255,0.05); }
-  .comp-table td { padding:1.25rem 1.5rem; font-size:15px; border-bottom:1px solid rgba(255,255,255,0.04); }
-  .comp-table tbody tr:last-child td { border-bottom:none; }
-  .comp-table tbody tr:hover { background:rgba(255,255,255,0.02); }
-  .comp-meca { font-weight:700; color:var(--primary); }
-  .comp-other { color:var(--muted); }
-  .comp-feat { font-weight:700; color:#aaa; }
+  .comp-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:2.5rem; }
+  .comp-card { background:var(--card); border:1px solid rgba(255,255,255,0.06); border-radius:20px; padding:2rem 1.75rem; display:flex; flex-direction:column; gap:1rem; transition:border-color 0.25s, transform 0.25s; }
+  .comp-card:hover { border-color:rgba(168,85,247,0.35); transform:translateY(-3px); }
+  .comp-card-icon { width:44px; height:44px; background:rgba(168,85,247,0.1); border-radius:12px; display:flex; align-items:center; justify-content:center; color:var(--accent); flex-shrink:0; }
+  .comp-card-badge { display:inline-block; font-size:10px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--primary); background:rgba(200,240,100,0.08); border:1px solid rgba(200,240,100,0.2); border-radius:100px; padding:0.25rem 0.65rem; width:fit-content; }
+  .comp-card-title { font-size:16px; font-weight:700; color:#fff; line-height:1.3; }
+  .comp-card-desc { font-size:14px; color:var(--muted); line-height:1.65; }
 
   /* STUDIO IMAGE */
   .studio-img-wrap { margin:3rem 0; border-radius:28px; overflow:hidden; border:1px solid var(--border); height:320px; position:relative; }
@@ -910,8 +908,8 @@ const style = `
       transform: scale(1.15);
     }
 
-    .comp-table { min-width: 520px; }
-    .comp-table th, .comp-table td { padding: 0.85rem 0.75rem; font-size: 13px; }
+    .comp-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    .comp-card { padding: 1.5rem 1.25rem; }
 
     .studio-img-wrap { height: 220px; border-radius: 20px; }
 
@@ -920,6 +918,14 @@ const style = `
     .bottom-cta-p { font-size: 16px; }
     .wl-card, .vip-ticket { max-width: none; width: 100%; }
     .footer-bar { flex-direction: column; gap: 0.5rem; align-items: flex-start; }
+  }
+
+  @media (max-width: 480px) {
+    .comp-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+    .comp-card { padding: 1.25rem 1rem; }
+    .comp-card-title { font-size: 14px; }
+    .comp-card-desc { font-size: 12px; line-height: 1.5; }
+    .comp-card-icon { width: 36px; height: 36px; border-radius: 10px; }
   }
 
   /* EXTENDED WAITLIST */
@@ -1226,9 +1232,9 @@ const translations = {
     mockSearch: "Procura um baixista, vocalista...",
     mockSS1: "Coloca aqui a tua screenshot do Flash Mode",
     mockSS2: "Coloca aqui a tua screenshot do Board",
-    compEye: "Panorama Competitivo", compTitle: "Diferenciação MECA",
-    compF: "Funcionalidade", compMECA: "MECA", compV: "Vampr", compB: "BandMix",
-    cf1: "Swipe Discovery (Flash Mode)", cf2: "Booking de Estúdio/Ensaios", cf3: "Gigs & Live Performance", cf4: "Match Score Engine", cf5: "Perfis de Negócio (Estúdio/Venue)",
+    compEye: "Só na MECA", compTitle: "Uma plataforma. Todo o ecossistema musical.", compBadge: "Exclusivo MECA",
+    cf1: "Flash Mode", cf2: "Booking de Estúdio", cf3: "Gigs & Live Performance", cf4: "Match Score Engine", cf5: "Perfis de Negócio", cf6: "Jams & Eventos",
+    cd1: "Descobre músicos e bandas com swipe, em tempo real.", cd2: "Reserva estúdios e salas de ensaio diretamente na app.", cd3: "Candidata-te a gigs e digressões com o teu perfil.", cd4: "IA que calcula compatibilidade musical entre perfis.", cd5: "Estúdios e venues com perfil próprio e agenda integrada.", cd6: "Encontra jams, e concertos ao vivo perto de ti.",
     studioBadge: "INFRAESTRUTURA VERIFICADA",
     bottomH: "Entra na lista de espera.", bottomP: "A MECA lança em Lisboa em breve.\nJunta-te como Founding Member e garante 12 meses de Pro grátis + um desconto vitalício na subscrição Pro.",
     bottomMicro: "Só te contactamos quando abrirmos. Sem spam.",
@@ -1307,9 +1313,9 @@ const translations = {
     mockSearch: "Search for a bassist, vocalist...",
     mockSS1: "Place your Flash Mode screenshot here",
     mockSS2: "Place your Board screenshot here",
-    compEye: "Competitive Landscape", compTitle: "MECA Differentiation",
-    compF: "Feature", compMECA: "MECA", compV: "Vampr", compB: "BandMix",
-    cf1: "Swipe Discovery (Flash Mode)", cf2: "Studio/Rehearsal Booking", cf3: "Gigs & Live Performance", cf4: "Match Score Engine", cf5: "Business Profiles (Studio/Venue)",
+    compEye: "Only on MECA", compTitle: "One platform. The entire music ecosystem.", compBadge: "MECA Exclusive",
+    cf1: "Flash Mode", cf2: "Studio Booking", cf3: "Gigs & Live Performance", cf4: "Match Score Engine", cf5: "Business Profiles", cf6: "Jams & Events",
+    cd1: "Discover musicians and bands with swipe, in real time.", cd2: "Book studios and rehearsal rooms directly in the app.", cd3: "Apply to gigs and tours with your profile.", cd4: "AI that calculates musical compatibility between profiles.", cd5: "Studios and venues with their own profile and integrated schedule.", cd6: "Find jam sessions and live events near you.",
     studioBadge: "VERIFIED INFRASTRUCTURE",
     bottomH: "Join the waiting list.", bottomP: "MECA launches in Lisbon soon.\nJoin as a Founding Member and get 12 months of Pro free + a lifetime discount on the Pro subscription.",
     bottomMicro: "We'll only reach out when we launch. No spam.",
@@ -1636,11 +1642,12 @@ export default function App() {
   const howPurple = howTab !== "artists";
 
   const compRows = [
-    { f: s("cf1"), m: "✓ Flash Mode", v: "Limitado", b: "Não" },
-    { f: s("cf2"), m: "✓ Nativo", v: "Não", b: "Não" },
-    { f: s("cf3"), m: "✓ The Board", v: "Baixo", b: "Parcial" },
-    { f: s("cf4"), m: "✓ Match Score", v: "Não", b: "Não" },
-    { f: s("cf5"), m: "✓ Completo", v: "Não", b: "Não" },
+    { f: s("cf1"), d: s("cd1"), Icon: Zap },
+    { f: s("cf2"), d: s("cd2"), Icon: MapPin },
+    { f: s("cf3"), d: s("cd3"), Icon: Star },
+    { f: s("cf4"), d: s("cd4"), Icon: TrendingUp },
+    { f: s("cf5"), d: s("cd5"), Icon: User },
+    { f: s("cf6"), d: s("cd6"), Icon: Search },
   ];
 
   return (
@@ -2220,27 +2227,16 @@ export default function App() {
         <section className="section">
           <p className="section-eyebrow purple">{s("compEye")}</p>
           <h2 className="section-title">{s("compTitle")}</h2>
-          <div className="comp-scroll">
-            <table className="comp-table">
-              <thead>
-                <tr>
-                  <th>{s("compF")}</th>
-                  <th>{s("compMECA")}</th>
-                  <th>{s("compV")}</th>
-                  <th>{s("compB")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {compRows.map((r, i) => (
-                  <tr key={i}>
-                    <td className="comp-feat">{r.f}</td>
-                    <td className="comp-meca">{r.m}</td>
-                    <td className="comp-other">{r.v}</td>
-                    <td className="comp-other">{r.b}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="comp-grid">
+            {compRows.map((r, i) => (
+              <div className="comp-card" key={i}>
+                <div className="comp-card-icon">
+                  <r.Icon size={20} />
+                </div>
+                <div className="comp-card-title">{r.f}</div>
+                <div className="comp-card-desc">{r.d}</div>
+              </div>
+            ))}
           </div>
         </section>
 
