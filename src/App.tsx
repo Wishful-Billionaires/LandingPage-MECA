@@ -33,7 +33,7 @@ const style = `
   @keyframes floatStudio { 0%,100%{transform:translateY(0) rotate(-5deg)} 50%{transform:translateY(-8px) rotate(-4deg)} }
   @keyframes floatArtist { 0%,100%{transform:translateY(0) rotate(5deg)} 50%{transform:translateY(-8px) rotate(4deg)} }
   .float-center { animation: floatC 4s ease-in-out infinite; }
-  @keyframes floatC { 0%,100%{transform:translate(-50%,-50%)} 50%{transform:translate(-50%,-46%)} }
+  @keyframes floatC { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(-8px)} }
 
   .wrap { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
 
@@ -57,10 +57,9 @@ const style = `
 
   /* HERO */
   .hero {
-    min-height: 90vh;
     display: grid;
     grid-template-columns: 1.2fr 0.8fr;
-    align-items: start;
+    align-items:start; 
     gap: 3rem;
     padding: 8rem 0 5rem;
     border-bottom: 1px solid var(--border);
@@ -88,9 +87,9 @@ const style = `
   .hv-blob2 { position:absolute; bottom:2rem; left:2rem; width:150px; height:150px; background:var(--accent); opacity:0.15; filter:blur(60px); border-radius:50%; }
 
   /* FLOATING CARDS */
-  .fc-studio { position:absolute; top:6%; left:12px; width:220px; transform:rotate(-5deg); z-index:10; }
-  .fc-artist { position:absolute; top:11%; right:12px; width:205px; transform:rotate(5deg); z-index:10; }
-  .fc-gig { position:absolute; top:58%; left:50%; transform:translate(-50%,-50%); width:270px; z-index:20; }
+  .fc-studio { position:absolute; top:10%; left:12px; width:220px; transform:rotate(-3deg); z-index:10; }
+  .fc-artist { position:absolute; top:27%; right:12px; width:205px; transform:rotate(1deg); z-index:10; }
+  .fc-gig { position:absolute; top:55%; left:50%; transform:translate(-50%,-50%); width:270px; z-index:20; }
   .card-dark { background:#111; border-radius:16px; border:1px solid #333; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.5); }
   .card-img { height:90px; background:#1a1a1a; overflow:hidden; position:relative; }
   .card-img img { width:100%; height:100%; object-fit:cover; opacity:0.8; }
@@ -1172,7 +1171,7 @@ const style = `
     padding: 0.75rem 1rem;
     background: var(--primary);
     color: #000;
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 700;
     text-align: center;
     border: none;
@@ -1267,6 +1266,7 @@ const translations = {
     roleStudio: "Estúdio de Gravação",
     roleVenue: "Venue / Promotor de Concertos",
     roleProducer: "Produtor / Som",
+    roleOther: "Outro",
   },
   en: {
     eyebrow: "The professional music platform",
@@ -1347,6 +1347,7 @@ const translations = {
     roleStudio: "Recording Studio",
     roleVenue: "Live Music Venue / Promoter",
     roleProducer: "Producer / Sound Engineer",
+    roleOther: "Other",
   }
 };
 
@@ -1369,6 +1370,7 @@ function convertRoleToLabel(role: string, lang: "pt" | "en"): string {
     case "roleStudio": return t(lang, "roleStudio");
     case "roleVenue": return t(lang, "roleVenue");
     case "roleProducer": return t(lang, "roleProducer");
+    case "roleOther": return t(lang, "roleOther");
     default: return role;
   }
 }
@@ -1578,6 +1580,7 @@ function WaitingForm({ lang, dark }: WaitingFormProps) {
             <option value="roleStudio">{t(lang, "roleStudio")}</option>
             <option value="roleVenue">{t(lang, "roleVenue")}</option>
             <option value="roleProducer">{t(lang, "roleProducer")}</option>
+            <option value="roleOther">{t(lang, "roleOther")}</option>
           </select>
         </div>
 
