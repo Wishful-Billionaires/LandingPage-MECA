@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Zap, Eye, Rocket, Search, MapPin, Check, Music, Mic, DollarSign, Star, TrendingUp, Users, Mail, Clipboard, User } from "lucide-react";
+import { Zap, Rocket, Search, MapPin, Check, DollarSign, Star, TrendingUp, Mail, Clipboard, User } from "lucide-react";
 
 const style = `
   @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;700;900&display=swap');
@@ -15,9 +15,13 @@ const style = `
     background: var(--bg);
     color: #fff;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
   }
   .meca-root * { box-sizing: border-box; margin: 0; padding: 0; }
   .meca-root a { text-decoration: none; color: inherit; }
+  .comp-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
   .fade-in { animation: fadeIn 0.8s ease both; }
   .fade-in-2 { animation: fadeIn 0.8s 0.2s ease both; }
@@ -125,14 +129,6 @@ const style = `
   .artist-stat-lbl { font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em; }
   .artist-jam-btn { width:100%; background:var(--accent); color:#fff; font-size:10px; font-weight:700; padding:8px; border-radius:8px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:4px; }
 
-  /* STATS */
-  .stats-row { display:grid; grid-template-columns:repeat(3,1fr); border-bottom:1px solid var(--border); }
-  .stat-cell { padding:2rem 0; }
-  .stat-cell:not(:last-child) { border-right:1px solid var(--border); padding-right:2rem; }
-  .stat-cell:not(:first-child) { padding-left:2rem; }
-  .stat-num { font-family:'DM Serif Display',serif; font-size:3rem; color:#fff; line-height:1; margin-bottom:0.4rem; }
-  .stat-lbl { font-size:14px; color:var(--muted); line-height:1.4; }
-
   /* SECTIONS */
   .section { padding:4rem 0; border-bottom:1px solid var(--border); }
   .section-eyebrow { font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--primary); margin-bottom:1rem; }
@@ -140,7 +136,7 @@ const style = `
   .section-title { font-family:'DM Serif Display',serif; font-size:clamp(2.5rem,4.5vw,4rem); line-height:1.05; margin-bottom:1rem; font-weight:400; }
 
   /* VISION */
-  .vision-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-top:2.5rem; }
+  .vision-grid { display:grid; grid-template-columns:1fr; gap:1.5rem; margin-top:2.5rem; }
   .vision-card { background:var(--card); border:1px solid var(--border); padding:2.5rem; border-radius:24px; transition:all 0.3s; }
   .vision-card:hover { border-color:var(--accent); transform:translateY(-4px); }
   .vision-icon { width:36px; height:36px; color:var(--primary); margin-bottom:1.5rem; }
@@ -148,12 +144,17 @@ const style = `
   .vision-p { font-size:17px; color:var(--muted); line-height:1.7; }
 
   /* HOW IT WORKS */
-  .how-grid { display:grid; grid-template-columns:1fr 1fr; gap:4rem; margin-top:3rem; }
-  .how-col-title { display:flex; align-items:center; gap:1rem; margin-bottom:2.5rem; }
-  .how-icon-wrap { padding:0.75rem; border-radius:14px; }
-  .how-icon-wrap.green { background:rgba(200,240,100,0.1); }
-  .how-icon-wrap.purple { background:rgba(168,85,247,0.1); }
-  .how-col-h { font-size:22px; font-weight:700; color:#fff; }
+  .how-tabs { display:flex; flex-wrap:wrap; gap:0.5rem; margin:2rem 0 2.5rem; }
+  .how-tab {
+    padding:0.55rem 1.15rem; border-radius:999px; border:1px solid var(--border);
+    background:transparent; color:var(--muted); font-size:13px; font-weight:700;
+    text-transform:uppercase; letter-spacing:0.08em; cursor:pointer; transition:all 0.2s;
+    font-family:inherit;
+  }
+  .how-tab:hover { color:#fff; border-color:rgba(255,255,255,0.2); }
+  .how-tab.active { background:var(--primary); color:#080808; border-color:var(--primary); }
+  .how-tab.active.purple { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .how-panel { max-width:640px; }
   .steps { display:flex; flex-direction:column; gap:2.5rem; position:relative; }
   .steps::before { content:''; position:absolute; left:18px; top:4px; bottom:4px; width:2px; background:linear-gradient(to bottom,var(--primary),transparent); }
   .step-row { display:flex; gap:1rem; align-items:flex-start; position:relative; }
@@ -180,6 +181,16 @@ const style = `
   .audience-item::before { content:'→'; position:absolute; left:0; color:var(--primary); font-weight:700; }
   .audience-item.purple::before { color:var(--accent); }
   .audience-item strong { color:#fff; }
+  .audience-item-toggle {
+    display: inline;
+    background: none; border: none; padding: 0; margin: 0;
+    color: inherit; font: inherit; text-align: left; cursor: default;
+    pointer-events: none;
+  }
+  .audience-item-toggle strong { color:#fff; }
+  .audience-chevron { display: none; }
+  .audience-item-desc { display: inline; }
+  .audience-item-desc::before { content: ' '; }
 
   /* INTERSTITIAL */
   .interstitial { padding:5rem 0; text-align:center; }
@@ -192,6 +203,7 @@ const style = `
   .mockup-phone { width:300px; background:var(--card); border-radius:28px; border:1px solid #333; overflow:hidden; box-shadow:0 30px 60px rgba(0,0,0,0.6); }
   .mockup-phone.tilt-l { transform:rotate(-4deg); }
   .mockup-phone.tilt-r { transform:rotate(4deg); }
+  .mockup-dots { display:none; }
   .mockup-header { padding:1rem; border-bottom:1px solid #222; }
   .mockup-search { background:#1a1a1a; border-radius:999px; padding:0.5rem 1rem; display:flex; align-items:center; gap:0.5rem; color:var(--muted); font-size:13px; margin-bottom:0.75rem; }
   .mockup-tabs { display:flex; gap:0.5rem; overflow-x:auto; }
@@ -747,26 +759,6 @@ const style = `
   .comp-other { color:var(--muted); }
   .comp-feat { font-weight:700; color:#aaa; }
 
-  /* MARKET */
-  .market-grid { display:grid; grid-template-columns:2fr 1fr; grid-template-rows:1fr 1fr; gap:1rem; height:520px; margin-top:3rem; }
-  .market-main { grid-row:span 2; background:linear-gradient(135deg,#111,#060606); border:1px solid rgba(255,255,255,0.05); border-radius:28px; padding:2.5rem; display:flex; flex-direction:column; justify-content:space-between; transition:border-color 0.3s; }
-  .market-main:hover { border-color:rgba(168,85,247,0.3); }
-  .market-big-num { font-family:'DM Serif Display',serif; font-size:7rem; color:var(--accent); line-height:1; margin-bottom:1rem; }
-  .market-main-h { font-size:1.75rem; font-weight:700; color:#fff; margin-bottom:0.75rem; }
-  .market-main-p { font-size:17px; color:var(--muted); line-height:1.7; }
-  .market-pills { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:1.5rem; }
-  .market-pill { padding:0.35rem 1rem; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.05); border-radius:999px; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:#666; }
-  .market-sub { background:#0a0a0a; border:1px solid rgba(255,255,255,0.05); border-radius:28px; padding:1.5rem; display:flex; flex-direction:column; justify-content:space-between; transition:all 0.3s; }
-  .market-sub:hover { background:#111; }
-  .market-sub-icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; margin-bottom:0.75rem; }
-  .market-sub-icon.green { background:rgba(200,240,100,0.1); color:var(--primary); }
-  .market-sub-icon.purple { background:rgba(168,85,247,0.1); color:var(--accent); }
-  .market-sub-eyebrow { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.15em; margin-bottom:0.5rem; }
-  .market-sub-eyebrow.green { color:var(--primary); }
-  .market-sub-eyebrow.purple { color:var(--accent); }
-  .market-sub-h { font-size:17px; font-weight:700; color:#fff; margin-bottom:0.4rem; line-height:1.3; }
-  .market-sub-p { font-size:14px; color:var(--muted); line-height:1.6; }
-
   /* STUDIO IMAGE */
   .studio-img-wrap { margin:3rem 0; border-radius:28px; overflow:hidden; border:1px solid var(--border); height:320px; position:relative; }
   .studio-img-wrap img { width:100%; height:100%; object-fit:cover; opacity:0.55; transition:transform 0.6s; }
@@ -806,22 +798,146 @@ const style = `
   .footer-tag { font-size:14px; color:var(--muted); }
 
   @media (max-width:768px) {
-    .hero { grid-template-columns:1fr; padding:7rem 0 3rem; }
+    .wrap { padding: 0 1rem; width: 100%; max-width: 100%; }
+
+    .hero { grid-template-columns:1fr; padding:7rem 0 3rem; gap: 0; }
     .hero-visual { display:none; }
-    .stats-row { grid-template-columns:1fr; }
-    .stat-cell { border-right:none !important; padding-left:0 !important; padding-right:0 !important; border-bottom:1px solid var(--border); }
-    .stat-cell:last-child { border-bottom:none; }
+    .hero-glow, .mockups-glow { display:none; }
+    .hero-title { font-size: clamp(3rem, 12vw, 3.75rem); }
+    .hero-sub { font-size: 19px; max-width: none; line-height: 1.65; }
+    .waiting-form, .bottom-form { max-width: none; width: 100%; flex-direction: column; }
+    .waiting-input, .bottom-input { min-width: 0; width: 100%; font-size: 16px; }
+    .waiting-btn, .bottom-btn { font-size: 16px; width: 100%; }
+
+    .section-title { font-size: clamp(2.5rem, 10vw, 3.25rem); }
     .vision-grid { grid-template-columns:1fr; }
-    .how-grid { grid-template-columns:1fr; gap:2.5rem; }
-    .market-grid { grid-template-columns:1fr; height:auto; }
-    .market-main { grid-row:span 1; }
-    .market-big-num { font-size:4rem; }
-    .mockups-row { flex-direction:column; align-items:center; }
-    .mockup-phone { transform:none !important; }
+    .vision-card { padding: 1.5rem; width: 100%; }
+    .vision-h { font-size: 22px; }
+    .vision-p { font-size: 17px; }
+
+    .how-panel { max-width: none; width: 100%; }
+    .how-tabs { width: 100%; }
+    .how-tab { font-size: 13px; padding: 0.55rem 1rem; }
+    .step-h { font-size: 19px; }
+    .step-p { font-size: 17px; }
+
+    .audience-cards { width: 100%; }
+    .audience-card { padding: 1.5rem 1.25rem 1.5rem 1.5rem; width: 100%; border-radius: 20px; }
+    .audience-h { font-size: 1.85rem; }
+    .audience-sub { font-size: 17px; }
+    .audience-list { gap: 0.35rem; }
+    .audience-item {
+      font-size: 17px;
+      padding-left: 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .audience-item:last-child { border-bottom: none; }
+    .audience-item::before { display: none; }
+    .audience-item-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      width: 100%;
+      padding: 0.85rem 0;
+      cursor: pointer;
+      pointer-events: auto;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .audience-item-toggle strong {
+      font-size: 17px;
+      line-height: 1.35;
+    }
+    .audience-chevron {
+      display: block;
+      flex-shrink: 0;
+      width: 10px;
+      height: 10px;
+      border-right: 2px solid var(--muted);
+      border-bottom: 2px solid var(--muted);
+      transform: rotate(45deg);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+      margin-top: -4px;
+    }
+    .audience-item.purple .audience-chevron { border-color: var(--accent); }
+    .audience-item:not(.purple) .audience-chevron { border-color: var(--primary); }
+    .audience-item.open .audience-chevron {
+      transform: rotate(225deg);
+      margin-top: 4px;
+    }
+    .audience-item-desc {
+      display: none;
+      padding: 0 0 0.85rem;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+    .audience-item-desc::before { content: none; }
+    .audience-item.open .audience-item-desc { display: block; }
+
+    .interstitial h2 { font-size: clamp(2rem, 9vw, 2.75rem); }
+
+    .mockups-row {
+      display: grid;
+      width: 100%;
+      gap: 0;
+      justify-content: stretch;
+    }
+    .mockup-phone {
+      grid-area: 1 / 1;
+      transform: none !important;
+      width: 100%;
+      max-width: 100%;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.9s ease;
+      z-index: 0;
+    }
+    .mockup-phone.active {
+      opacity: 1;
+      pointer-events: auto;
+      z-index: 1;
+    }
+    .mockup-dots {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1.25rem;
+      position: relative;
+      z-index: 2;
+    }
+    .mockup-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      border: none;
+      padding: 0;
+      background: rgba(255,255,255,0.25);
+      cursor: pointer;
+      transition: background 0.25s ease, transform 0.25s ease;
+    }
+    .mockup-dot.active {
+      background: var(--primary);
+      transform: scale(1.15);
+    }
+
+    .comp-table { min-width: 520px; }
+    .comp-table th, .comp-table td { padding: 0.85rem 0.75rem; font-size: 13px; }
+
+    .studio-img-wrap { height: 220px; border-radius: 20px; }
+
     .nav-links { display:none; }
+    .sticky-bar {
+      left: 1rem; right: 1rem; width: auto; max-width: calc(100% - 2rem);
+      transform: none; gap: 0.5rem; padding: 0.65rem 0.85rem;
+    }
     .sticky-label { display:none; }
-    .sticky-input { width:140px; }
-    .bottom-cta-inner { padding:2.5rem 1.5rem; }
+    .sticky-form { flex: 1; min-width: 0; }
+    .sticky-input { width: auto; flex: 1; min-width: 0; }
+    .bottom-cta-inner { padding:2.5rem 1.25rem; border-radius: 28px; }
+    .bottom-cta-p { font-size: 16px; }
+    .wl-card, .vip-ticket { max-width: none; width: 100%; }
+    .footer-bar { flex-direction: column; gap: 0.5rem; align-items: flex-start; }
   }
 
   /* EXTENDED WAITLIST */
@@ -1083,29 +1199,30 @@ const translations = {
     done: "✓ Estás na lista",
     micro: "Só te contactamos quando abrirmos. Sem spam.",
     success: "✓ Perfeito. Serás dos primeiros a saber.",
-    stat1n: "18K+", stat1l: "músicos profissionais só em Lisboa",
-    stat2n: "124", stat2l: "estúdios de gravação em Lisboa",
-    stat3n: "113+", stat3l: "venues de música ao vivo",
-    visionEye: "Propósito", visionTitle: "Visão & Missão",
-    v1h: "A Nossa Visão", v1p: "Tornar-se a plataforma de referência global onde estúdios, venues e talento se encontram de forma orgânica e profissional.",
     v2h: "A Nossa Missão", v2p: "Empoderar músicos independentes através de ferramentas de descoberta, colaboração sem fricção e capacidades de reserva integradas.",
-    howEye: "Processo", howTitle: "Como Funciona", howSub: "Fluxos simplificados para que te possas focar no que importa: a música.",
-    howArtists: "Para Artistas", howBiz: "Para Negócios",
+    howTitle: "Como Funciona", howSub: "Fluxos simplificados para que te possas focar no que importa: a música.",
+    howTabArtists: "Artistas", howTabStudios: "Estúdios", howTabVenues: "Venues", howTabFans: "Fãs",
     a1t: "Cria o teu Perfil", a1p: "Define instrumentos, géneros e raio de atuação. Se tens uma Banda, cria um perfil coletivo.",
-    a2t: "Descoberta", a2p: "Entra no Flash Mode para encontrar o músico ideal ou para ficares no radar de promotores e estúdios locais.",
-    a3t: "Garante Concertos", a3p: "Candidata-te a gigs no The Board, fecha tours ou recebe convites diretos para sessões profissionais.",
-    b1t: "Lista o teu Espaço", b1p: "Define tarifas, horários e equipamentos. Torna o teu estúdio ou venue visível para milhares de artistas.",
-    b2t: "Gestão de Booking", b2p: "Centraliza candidaturas. Filtra artistas por género, nível técnico e disponibilidade.",
-    b3t: "Otimiza a Agenda", b3p: "Preenche slots vazios com promoções direcionadas e elimina as horas ociosas no teu calendário.",
-    audEye: "Públicos-Alvo", audTitle: "O Teu Ecossistema",
+    a2t: "Descoberta", a2p: "Descobre músicos, bandas e oportunidades. Ou faz-te descobrir por quem procura talento.",
+    a3t: "Garante Concertos", a3p: "Encontra concertos, eventos e oportunidades de colaboração.",
+    s1t: "Lista o teu espaço", s1p: "Define tarifas, horários e equipamentos. Torna o teu estúdio visível para milhares de artistas.",
+    s2t: "Cria salas e gere bookings", s2p: "Organiza salas, controla a disponibilidade e fecha reservas sem trocas intermináveis de mensagens.",
+    s3t: "Atrai artistas e enche a agenda", s3p: "Liga o teu estúdio à comunidade musical e transforma slots vazios em novas oportunidades.",
+    vn1t: "Publica o teu venue", vn1p: "Define capacidade, géneros e disponibilidade. Torna o teu espaço visível na rede local.",
+    vn2t: "Recebe candidaturas", vn2p: "Centraliza pedidos de bandas e filtra por género, nível técnico e disponibilidade.",
+    vn3t: "Mantém a programação ativa", vn3p: "Encontra artistas para concertos, eventos e programação regular com a nossa rede.",
+    f1t: "Segue a cena", f1p: "Cria o teu perfil e segue artistas emergentes que estão a mover a música na tua cidade.",
+    f2t: "Descobre concertos perto de ti", f2p: "Encontra eventos locais e fica a par do que está a acontecer à tua volta.",
+    f3t: "Apoia artistas emergentes", f3p: "Marca presença, partilha e apoia a música que está a nascer na tua comunidade.",
+    audTitle: "O Teu Ecossistema",
     aud1eye: "Para Quem Cria", aud1h: "Músicos & Artistas", aud1sub: "A MECA é o espaço onde talento encontra oportunidades.",
-    aud1i1: "Exposição Direta:", aud1i1d: "Alcança fãs e profissionais e coloca a tua performance à frente de quem decide.",
-    aud1i2: "O Match Perfeito:", aud1i2d: "Recruta o integrante ideal ou junta-te a novos projetos, com filtros de nível técnico.",
-    aud1i3: "Controlo Total:", aud1i3d: "Garante ensaios, sessões de gravação e concertos instantaneamente. Sem chamadas, sem demoras.",
+    aud1i1: "Exposição Direta", aud1i1d: "Alcança fãs e profissionais e coloca a tua performance à frente de quem decide.",
+    aud1i2: "O Match Perfeito", aud1i2d: "Recruta o integrante ideal ou junta-te a novos projetos, com filtros de nível técnico.",
+    aud1i3: "Controlo Total", aud1i3d: "Garante ensaios, sessões de gravação e concertos instantaneamente. Sem chamadas, sem demoras.",
     aud2eye: "Para Quem Providencia", aud2h: "Estúdios & Venues", aud2sub: "Maximiza a rentabilidade do teu espaço e profissionaliza o teu booking.",
-    aud2i1: "Rentabilidade Inteligente:", aud2i1d: "Acaba com o tempo ocioso. Usa o Board para converter slots vazios em faturação imediata.",
-    aud2i2: "Curadoria Simplificada:", aud2i2d: "Diz adeus ao caos das DMs. Centraliza candidaturas e fecha o teu cartaz com segurança.",
-    aud2i3: "Radar de Talento:", aud2i3d: "Sê o primeiro a descobrir artistas que estão a mover a cena local.",
+    aud2i1: "Rentabilidade Inteligente", aud2i1d: "Acaba com o tempo ocioso. Usa o Board para converter slots vazios em faturação imediata.",
+    aud2i2: "Curadoria Simplificada", aud2i2d: "Diz adeus ao caos das DMs. Centraliza candidaturas e fecha o teu cartaz com segurança.",
+    aud2i3: "Radar de Talento", aud2i3d: "Sê o primeiro a descobrir artistas que estão a mover a cena local.",
     intTitle: "A MECA é a casa das ", intA1: "colaborações", intMid: ", dos ", intA2: "palcos", intMid2: " e das ", intA3: "novas possibilidades", intEnd: ".",
     mockTab1: "Artistas", mockTab2: "Bandas", mockTab3: "Estúdios",
     mockSearch: "Procura um baixista, vocalista...",
@@ -1114,12 +1231,6 @@ const translations = {
     compEye: "Panorama Competitivo", compTitle: "Diferenciação MECA",
     compF: "Funcionalidade", compMECA: "MECA", compV: "Vampr", compB: "BandMix",
     cf1: "Swipe Discovery (Flash Mode)", cf2: "Booking de Estúdio/Ensaios", cf3: "Gigs & Live Performance", cf4: "Match Score Engine", cf5: "Perfis de Negócio (Estúdio/Venue)",
-    mktEye: "Mercado", mktTitle: "Escala Global",
-    mktSub: "O mercado musical está a mudar. A MECA posiciona-se no centro desta transformação.",
-    mktBigN: "100+", mktBigH: "Hub de Lisboa", mktBigP: "Lisboa consolida-se como capital criativa. Com mais de 100 espaços ativos, 75% da receita musical em Portugal provém do ecossistema ao vivo.",
-    mktP1: "+15% Crescimento YoY", mktP2: "Cluster Marvila/Beato",
-    mkt1eye: "Estúdios", mkt1h: "Maximize a ocupação.", mkt1p: "Converte slots vazios em faturação. O Board liga o teu calendário diretamente a músicos prontos a reservar.",
-    mkt2eye: "Venues", mkt2h: "Simplifica a curadoria.", mkt2p: "Centraliza candidaturas de bandas e mantém a programação sempre ativa com a nossa rede local.",
     studioBadge: "INFRAESTRUTURA VERIFICADA",
     bottomH: "Entra na lista de espera.", bottomP: "A MECA lança em Lisboa em breve. Os primeiros a entrar têm acesso antecipado e condições especiais de founding member.",
     bottomMicro: "Só te contactamos quando abrirmos. Sem spam.",
@@ -1165,29 +1276,30 @@ const translations = {
     done: "✓ You're in",
     micro: "We'll only reach out when we launch. No spam.",
     success: "✓ Perfect. You'll be among the first to know.",
-    stat1n: "18K+", stat1l: "professional musicians in Lisbon alone",
-    stat2n: "124", stat2l: "recording studios in Lisbon",
-    stat3n: "113+", stat3l: "live music venues",
-    visionEye: "Purpose", visionTitle: "Vision & Mission",
-    v1h: "Our Vision", v1p: "To become the global reference platform where studios, venues and talent meet organically and professionally.",
     v2h: "Our Mission", v2p: "Empower independent musicians through powerful discovery tools, frictionless collaboration, and integrated booking capabilities.",
-    howEye: "Process", howTitle: "How It Works", howSub: "Simplified flows so you can focus on what matters: the music.",
-    howArtists: "For Artists", howBiz: "For Businesses",
+    howTitle: "How It Works", howSub: "Simplified flows so you can focus on what matters: the music.",
+    howTabArtists: "Artists", howTabStudios: "Studios", howTabVenues: "Venues", howTabFans: "Fans",
     a1t: "Create your Profile", a1p: "Set your instruments, genres and radius. If you have a Band, create a collective profile.",
-    a2t: "Discovery", a2p: "Enter Flash Mode to find the ideal musician or to get on the radar of local promoters and studios.",
-    a3t: "Secure Gigs", a3p: "Apply to gigs on The Board, close tours or receive direct invitations for professional sessions.",
-    b1t: "List your Space", b1p: "Set rates, schedules and equipment. Make your studio or venue visible to thousands of artists.",
-    b2t: "Booking Management", b2p: "Centralise applications. Filter artists by genre, technical level and availability.",
-    b3t: "Optimise Schedule", b3p: "Fill empty slots with targeted promotions and eliminate idle hours from your calendar.",
-    audEye: "Target Audiences", audTitle: "Your Ecosystem",
+    a2t: "Discovery", a2p: "Discover musicians, bands and opportunities. Or get discovered by those looking for talent.",
+    a3t: "Secure Gigs", a3p: "Find concerts, events and collaboration opportunities.",
+    s1t: "List your space", s1p: "Set rates, schedules and equipment. Make your studio visible to thousands of artists.",
+    s2t: "Create rooms and manage bookings", s2p: "Organise rooms, control availability and close bookings without endless message threads.",
+    s3t: "Attract artists and fill the calendar", s3p: "Connect your studio to the music community and turn empty slots into new opportunities.",
+    vn1t: "Publish your venue", vn1p: "Set capacity, genres and availability. Make your space visible on the local network.",
+    vn2t: "Receive applications", vn2p: "Centralise band requests and filter by genre, technical level and availability.",
+    vn3t: "Keep programming active", vn3p: "Find artists for concerts, events and regular programming with our network.",
+    f1t: "Follow the scene", f1p: "Create your profile and follow emerging artists moving the music in your city.",
+    f2t: "Discover concerts near you", f2p: "Find local events and stay on top of what's happening around you.",
+    f3t: "Support emerging artists", f3p: "Show up, share and support the music growing in your community.",
+    audTitle: "Your Ecosystem",
     aud1eye: "For Creators", aud1h: "Musicians & Artists", aud1sub: "MECA is the space where talent meets opportunity.",
-    aud1i1: "Direct Exposure:", aud1i1d: "Reach fans and professionals and put your performance in front of decision-makers.",
-    aud1i2: "The Perfect Match:", aud1i2d: "Recruit the ideal member or join new projects, with technical level filters.",
-    aud1i3: "Total Control:", aud1i3d: "Secure rehearsals, recording sessions and concerts instantly. No calls, no delays.",
+    aud1i1: "Direct Exposure", aud1i1d: "Reach fans and professionals and put your performance in front of decision-makers.",
+    aud1i2: "The Perfect Match", aud1i2d: "Recruit the ideal member or join new projects, with technical level filters.",
+    aud1i3: "Total Control", aud1i3d: "Secure rehearsals, recording sessions and concerts instantly. No calls, no delays.",
     aud2eye: "For Providers", aud2h: "Studios & Venues", aud2sub: "Maximise your space profitability and professionalise your booking.",
-    aud2i1: "Smart Profitability:", aud2i1d: "End idle time. Use The Board to convert empty slots into immediate revenue.",
-    aud2i2: "Simplified Curation:", aud2i2d: "Say goodbye to DM chaos. Centralise applications and close your lineup with confidence.",
-    aud2i3: "Talent Radar:", aud2i3d: "Be the first to discover artists moving the local scene.",
+    aud2i1: "Smart Profitability", aud2i1d: "End idle time. Use The Board to convert empty slots into immediate revenue.",
+    aud2i2: "Simplified Curation", aud2i2d: "Say goodbye to DM chaos. Centralise applications and close your lineup with confidence.",
+    aud2i3: "Talent Radar", aud2i3d: "Be the first to discover artists moving the local scene.",
     intTitle: "MECA is the home of ", intA1: "collaborations", intMiddle: ", ", intA2: "stages", intMid2: " and ", intA3: "new possibilities", intEnd: ".",
     mockTab1: "Artists", mockTab2: "Bands", mockTab3: "Studios",
     mockSearch: "Search for a bassist, vocalist...",
@@ -1196,12 +1308,6 @@ const translations = {
     compEye: "Competitive Landscape", compTitle: "MECA Differentiation",
     compF: "Feature", compMECA: "MECA", compV: "Vampr", compB: "BandMix",
     cf1: "Swipe Discovery (Flash Mode)", cf2: "Studio/Rehearsal Booking", cf3: "Gigs & Live Performance", cf4: "Match Score Engine", cf5: "Business Profiles (Studio/Venue)",
-    mktEye: "Market", mktTitle: "Global Scale",
-    mktSub: "The music market is changing. MECA positions itself at the centre of this transformation.",
-    mktBigN: "100+", mktBigH: "Lisbon Music Hub", mktBigP: "Lisbon is consolidating as a creative capital. With 100+ active spaces, 75% of music revenue in Portugal flows through the live ecosystem.",
-    mktP1: "+15% YoY Growth", mktP2: "Marvila/Beato Cluster",
-    mkt1eye: "Studios", mkt1h: "Maximise occupancy.", mkt1p: "Convert empty slots into revenue. The Board connects your calendar directly to musicians ready to book.",
-    mkt2eye: "Venues", mkt2h: "Simplify curation.", mkt2p: "Centralise band applications and keep your programming always active with our local network.",
     studioBadge: "VERIFIED INFRASTRUCTURE",
     bottomH: "Join the waiting list.", bottomP: "MECA launches in Lisbon soon. The first to join get early access and special founding member conditions.",
     bottomMicro: "We'll only reach out when we launch. No spam.",
@@ -1598,7 +1704,21 @@ function StickyBar({ lang }: StickyBarProps) {
 
 export default function App() {
   const [lang, setLang] = useState<"pt" | "en">("pt");
+  const [howTab, setHowTab] = useState<"artists" | "studios" | "venues" | "fans">("artists");
+  const [openAudItems, setOpenAudItems] = useState<Record<string, boolean>>({});
+  const [mockupSlide, setMockupSlide] = useState(0);
   const s = (key: string) => t(lang, key);
+
+  const toggleAudItem = (id: string) => {
+    setOpenAudItems((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      setMockupSlide((prev) => (prev + 1) % 2);
+    }, 4200);
+    return () => window.clearInterval(id);
+  }, []);
 
   const handleScrollToBottom = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -1607,6 +1727,23 @@ export default function App() {
       el.scrollIntoView({ behavior: "smooth" });
     }
   };
+
+  const howStepsByTab = {
+    artists: [[s("a1t"), s("a1p")], [s("a2t"), s("a2p")], [s("a3t"), s("a3p")]],
+    studios: [[s("s1t"), s("s1p")], [s("s2t"), s("s2p")], [s("s3t"), s("s3p")]],
+    venues: [[s("vn1t"), s("vn1p")], [s("vn2t"), s("vn2p")], [s("vn3t"), s("vn3p")]],
+    fans: [[s("f1t"), s("f1p")], [s("f2t"), s("f2p")], [s("f3t"), s("f3p")]],
+  } as const;
+
+  const howTabs = [
+    { id: "artists" as const, label: s("howTabArtists"), purple: false },
+    { id: "studios" as const, label: s("howTabStudios"), purple: true },
+    { id: "venues" as const, label: s("howTabVenues"), purple: true },
+    { id: "fans" as const, label: s("howTabFans"), purple: true },
+  ];
+
+  const howSteps = howStepsByTab[howTab];
+  const howPurple = howTab !== "artists";
 
   const compRows = [
     { f: s("cf1"), m: "✓ Flash Mode", v: "Limitado", b: "Não" },
@@ -1753,71 +1890,38 @@ export default function App() {
           </div>
         </header>
 
-        {/* STATS */}
-        <div className="stats-row">
-          <div className="stat-cell"><div className="stat-num">{s("stat1n")}</div><div className="stat-lbl">{s("stat1l")}</div></div>
-          <div className="stat-cell"><div className="stat-num">{s("stat2n")}</div><div className="stat-lbl">{s("stat2l")}</div></div>
-          <div className="stat-cell"><div className="stat-num">{s("stat3n")}</div><div className="stat-lbl">{s("stat3l")}</div></div>
-        </div>
-
-        {/* VISION */}
-        <section className="section" id="vision">
-          <p className="section-eyebrow">{s("visionEye")}</p>
-          <h2 className="section-title">{s("visionTitle")}</h2>
-          <div className="vision-grid">
-            <div className="vision-card">
-              <Eye className="vision-icon" />
-              <div className="vision-h">{s("v1h")}</div>
-              <div className="vision-p">{s("v1p")}</div>
-            </div>
-            <div className="vision-card">
-              <Rocket className="vision-icon" />
-              <div className="vision-h">{s("v2h")}</div>
-              <div className="vision-p">{s("v2p")}</div>
-            </div>
-          </div>
-        </section>
-
         {/* HOW IT WORKS */}
         <section className="section" id="how">
-          <p className="section-eyebrow">{s("howEye")}</p>
           <h2 className="section-title">{s("howTitle")}</h2>
           <p style={{ color: 'var(--muted)', fontSize: 16, marginBottom: '0.5rem' }}>{s("howSub")}</p>
-          <div className="how-grid">
-            <div>
-              <div className="how-col-title">
-                <div className="how-icon-wrap green"><Mic style={{ width: 22, height: 22, color: 'var(--primary)' }} /></div>
-                <div className="how-col-h">{s("howArtists")}</div>
-              </div>
-              <div className="steps">
-                {[[s("a1t"), s("a1p")], [s("a2t"), s("a2p")], [s("a3t"), s("a3p")]].map(([h, p], i) => (
-                  <div className="step-row" key={i}>
-                    <div className="step-num">0{i + 1}</div>
-                    <div><div className="step-h">{h}</div><div className="step-p">{p}</div></div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div>
-              <div className="how-col-title">
-                <div className="how-icon-wrap purple"><Music style={{ width: 22, height: 22, color: 'var(--accent)' }} /></div>
-                <div className="how-col-h">{s("howBiz")}</div>
-              </div>
-              <div className="steps purple">
-                {[[s("b1t"), s("b1p")], [s("b2t"), s("b2p")], [s("b3t"), s("b3p")]].map(([h, p], i) => (
-                  <div className="step-row" key={i}>
-                    <div className="step-num">0{i + 1}</div>
-                    <div><div className="step-h">{h}</div><div className="step-p">{p}</div></div>
-                  </div>
-                ))}
-              </div>
+          <div className="how-tabs" role="tablist" aria-label={s("howTitle")}>
+            {howTabs.map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                role="tab"
+                aria-selected={howTab === tab.id}
+                className={`how-tab${howTab === tab.id ? ` active${tab.purple ? ' purple' : ''}` : ''}`}
+                onClick={() => setHowTab(tab.id)}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+          <div className="how-panel" role="tabpanel">
+            <div className={`steps${howPurple ? ' purple' : ''}`}>
+              {howSteps.map(([h, p], i) => (
+                <div className="step-row" key={`${howTab}-${i}`}>
+                  <div className="step-num">0{i + 1}</div>
+                  <div><div className="step-h">{h}</div><div className="step-p">{p}</div></div>
+                </div>
+              ))}
             </div>
           </div>
         </section>
 
         {/* AUDIENCES */}
         <section className="section" id="audiences">
-          <p className="section-eyebrow purple">{s("audEye")}</p>
           <h2 className="section-title">{s("audTitle")}</h2>
           <div className="audience-cards">
             <div className="audience-card">
@@ -1826,9 +1930,24 @@ export default function App() {
               <h3 className="audience-h">{s("aud1h")}</h3>
               <p className="audience-sub">{s("aud1sub")}</p>
               <ul className="audience-list">
-                <li className="audience-item"><strong>{s("aud1i1")}</strong> {s("aud1i1d")}</li>
-                <li className="audience-item"><strong>{s("aud1i2")}</strong> {s("aud1i2d")}</li>
-                <li className="audience-item"><strong>{s("aud1i3")}</strong> {s("aud1i3d")}</li>
+                {[
+                  ["aud1i1", "aud1i1d"],
+                  ["aud1i2", "aud1i2d"],
+                  ["aud1i3", "aud1i3d"],
+                ].map(([titleKey, descKey]) => (
+                  <li key={titleKey} className={`audience-item${openAudItems[titleKey] ? ' open' : ''}`}>
+                    <button
+                      type="button"
+                      className="audience-item-toggle"
+                      aria-expanded={!!openAudItems[titleKey]}
+                      onClick={() => toggleAudItem(titleKey)}
+                    >
+                      <strong>{s(titleKey)}</strong>
+                      <span className="audience-chevron" aria-hidden="true" />
+                    </button>
+                    <span className="audience-item-desc">{s(descKey)}</span>
+                  </li>
+                ))}
               </ul>
             </div>
             <div className="audience-card">
@@ -1837,9 +1956,24 @@ export default function App() {
               <h3 className="audience-h">{s("aud2h")}</h3>
               <p className="audience-sub">{s("aud2sub")}</p>
               <ul className="audience-list">
-                <li className="audience-item purple"><strong>{s("aud2i1")}</strong> {s("aud2i1d")}</li>
-                <li className="audience-item purple"><strong>{s("aud2i2")}</strong> {s("aud2i2d")}</li>
-                <li className="audience-item purple"><strong>{s("aud2i3")}</strong> {s("aud2i3d")}</li>
+                {[
+                  ["aud2i1", "aud2i1d"],
+                  ["aud2i2", "aud2i2d"],
+                  ["aud2i3", "aud2i3d"],
+                ].map(([titleKey, descKey]) => (
+                  <li key={titleKey} className={`audience-item purple${openAudItems[titleKey] ? ' open' : ''}`}>
+                    <button
+                      type="button"
+                      className="audience-item-toggle"
+                      aria-expanded={!!openAudItems[titleKey]}
+                      onClick={() => toggleAudItem(titleKey)}
+                    >
+                      <strong>{s(titleKey)}</strong>
+                      <span className="audience-chevron" aria-hidden="true" />
+                    </button>
+                    <span className="audience-item-desc">{s(descKey)}</span>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
@@ -1857,7 +1991,7 @@ export default function App() {
           <div className="mockups-glow" />
           <div className="mockups-row">
             {/* LIFT SIDE PHONE - DISCOVER (ARTISTS FEED SCREENSHOT) */}
-            <div className="mockup-phone tilt-l" style={{ padding: 0 }}>
+            <div className={`mockup-phone tilt-l${mockupSlide === 0 ? ' active' : ''}`} style={{ padding: 0 }}>
               <div className="custom-screen">
                 {/* Simulated Top Bar of Discover Screen */}
                 <div className="disc-top-bar">
@@ -2016,7 +2150,7 @@ export default function App() {
             </div>
 
             {/* RIGHT SIDE PHONE - BOARD (OPPORTUNITIES / POSTS SCREENSHOT) */}
-            <div className="mockup-phone tilt-r" style={{ padding: 0 }}>
+            <div className={`mockup-phone tilt-r${mockupSlide === 1 ? ' active' : ''}`} style={{ padding: 0 }}>
               <div className="custom-screen">
                 {/* Header Container */}
                 <div className="board-v2-header-container">
@@ -2178,13 +2312,25 @@ export default function App() {
               </div>
             </div>
           </div>
+          <div className="mockup-dots" role="tablist" aria-label="App screens">
+            {[0, 1].map((i) => (
+              <button
+                key={i}
+                type="button"
+                role="tab"
+                aria-selected={mockupSlide === i}
+                className={`mockup-dot${mockupSlide === i ? ' active' : ''}`}
+                onClick={() => setMockupSlide(i)}
+              />
+            ))}
+          </div>
         </div>
 
         {/* COMPETITION */}
         <section className="section">
           <p className="section-eyebrow purple">{s("compEye")}</p>
           <h2 className="section-title">{s("compTitle")}</h2>
-          <div style={{ overflowX: 'auto' }}>
+          <div className="comp-scroll">
             <table className="comp-table">
               <thead>
                 <tr>
@@ -2214,38 +2360,13 @@ export default function App() {
           <div className="studio-badge">{s("studioBadge")}</div>
         </div>
 
-        {/* MARKET */}
-        <section className="section">
-          <p className="section-eyebrow purple">{s("mktEye")}</p>
-          <h2 className="section-title">{s("mktTitle")}</h2>
-          <p style={{ color: 'var(--muted)', fontSize: 16, maxWidth: 500 }}>{s("mktSub")}</p>
-          <div className="market-grid">
-            <div className="market-main">
-              <div>
-                <div className="market-big-num">{s("mktBigN")}</div>
-                <div className="market-main-h">{s("mktBigH")}</div>
-                <div className="market-main-p">{s("mktBigP")}</div>
-                <div className="market-pills">
-                  <span className="market-pill">{s("mktP1")}</span>
-                  <span className="market-pill">{s("mktP2")}</span>
-                </div>
-              </div>
-            </div>
-            <div className="market-sub">
-              <div>
-                <div className="market-sub-icon green"><TrendingUp style={{ width: 18, height: 18 }} /></div>
-                <div className="market-sub-eyebrow green">{s("mkt1eye")}</div>
-                <div className="market-sub-h">{s("mkt1h")}</div>
-                <div className="market-sub-p">{s("mkt1p")}</div>
-              </div>
-            </div>
-            <div className="market-sub">
-              <div>
-                <div className="market-sub-icon purple"><Users style={{ width: 18, height: 18 }} /></div>
-                <div className="market-sub-eyebrow purple">{s("mkt2eye")}</div>
-                <div className="market-sub-h">{s("mkt2h")}</div>
-                <div className="market-sub-p">{s("mkt2p")}</div>
-              </div>
+        {/* VISION */}
+        <section className="section" id="vision">
+          <div className="vision-grid">
+            <div className="vision-card">
+              <Rocket className="vision-icon" />
+              <div className="vision-h">{s("v2h")}</div>
+              <div className="vision-p">{s("v2p")}</div>
             </div>
           </div>
         </section>
