@@ -78,7 +78,6 @@ const style = `
   .waiting-btn { padding:0.95rem 1.6rem; background:var(--primary); color:#000; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:700; border:none; border-radius:8px; cursor:pointer; white-space:nowrap; transition:all 0.2s; }
   .waiting-btn:hover { background:#d4f576; transform:translateY(-1px); }
   .waiting-btn.done { background:var(--accent); color:#fff; }
-  .form-micro { font-size:14px; color:var(--muted); margin-top:0.6rem; }
   .success-msg { font-size:15px; color:var(--primary); font-weight:600; margin-top:0.75rem; display:none; }
   .success-msg.show { display:block; }
 
@@ -770,7 +769,7 @@ const style = `
   .bottom-cta-inner { background:var(--accent); border-radius:40px; padding:4rem 3rem; text-align:center; position:relative; overflow:hidden; }
   .bottom-cta-glow { position:absolute; top:-50%; left:-50%; width:200%; height:200%; background:radial-gradient(circle,rgba(200,240,100,0.15) 0%,transparent 50%); pointer-events:none; }
   .bottom-cta-h { font-family:'DM Serif Display',serif; font-size:clamp(2.5rem,4.5vw,4rem); margin-bottom:1rem; position:relative; z-index:1; font-weight:400; }
-  .bottom-cta-p { font-size:18px; opacity:0.9; margin-bottom:2.5rem; position:relative; z-index:1; max-width:520px; margin-left:auto; margin-right:auto; }
+  .bottom-cta-p { font-size:18px; opacity:0.9; margin-bottom:2.5rem; position:relative; z-index:1; max-width:520px; margin-left:auto; margin-right:auto; white-space:pre-line; }
   .bottom-form { display:flex; gap:0.5rem; max-width:420px; margin:0 auto 1.5rem; flex-wrap:wrap; position:relative; z-index:1; }
   .bottom-input { flex:1; min-width:200px; padding:0.95rem 1.1rem; font-size:16px; border:none; border-radius:8px; background:rgba(0,0,0,0.3); color:#fff; outline:none; }
   .bottom-input::placeholder { color:rgba(255,255,255,0.5); }
@@ -783,15 +782,6 @@ const style = `
   .cta-email { display:inline-block; margin-top:2rem; font-weight:700; font-size:17px; border-bottom:2px solid var(--primary); padding-bottom:2px; position:relative; z-index:1; color:#fff; }
 
   /* STICKY */
-  .sticky-bar { position:fixed; bottom:1.25rem; left:50%; transform:translateX(-50%); background:rgba(8,8,8,0.85); backdrop-filter:blur(16px); border:1px solid var(--accent); border-radius:999px; padding:0.75rem 1.25rem; display:flex; align-items:center; gap:1rem; z-index:50; box-shadow:0 20px 40px rgba(0,0,0,0.4); }
-  .sticky-label { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--primary); white-space:nowrap; }
-  .sticky-form { display:flex; gap:0.5rem; }
-  .sticky-input { padding:0.55rem 0.85rem; font-size:13px; border:1px solid var(--border); border-radius:999px; background:rgba(255,255,255,0.05); color:#fff; outline:none; width:180px; }
-  .sticky-input::placeholder { color:var(--muted); }
-  .sticky-btn { padding:0.55rem 1.1rem; background:var(--primary); color:#000; font-size:13px; font-weight:700; border:none; border-radius:999px; cursor:pointer; white-space:nowrap; transition:all 0.2s; }
-  .sticky-btn:hover { background:#d4f576; }
-  .sticky-btn.done { background:var(--accent); color:#fff; }
-
   /* FOOTER NAV */
   .footer-bar { padding:1.5rem 0; display:flex; justify-content:space-between; align-items:center; }
   .footer-logo { font-family:'DM Serif Display',serif; font-size:20px; }
@@ -927,13 +917,6 @@ const style = `
     .studio-img-wrap { height: 220px; border-radius: 20px; }
 
     .nav-links { display:none; }
-    .sticky-bar {
-      left: 1rem; right: 1rem; width: auto; max-width: calc(100% - 2rem);
-      transform: none; gap: 0.5rem; padding: 0.65rem 0.85rem;
-    }
-    .sticky-label { display:none; }
-    .sticky-form { flex: 1; min-width: 0; }
-    .sticky-input { width: auto; flex: 1; min-width: 0; }
     .bottom-cta-inner { padding:2.5rem 1.25rem; border-radius: 28px; }
     .bottom-cta-p { font-size: 16px; }
     .wl-card, .vip-ticket { max-width: none; width: 100%; }
@@ -1007,18 +990,6 @@ const style = `
     0% { box-shadow: 0 5px 20px rgba(200,240,100,0.05); border-color: var(--primary); }
     100% { box-shadow: 0 15px 35px rgba(168,85,247,0.15); border-color: var(--accent); }
   }
-  .ticket-notch-l, .ticket-notch-r {
-    position: absolute;
-    top: 50%;
-    width: 20px;
-    height: 20px;
-    background: #080808;
-    border-radius: 50%;
-    z-index: 5;
-  }
-  .ticket-notch-l { left: -11px; border-right: 2px solid var(--primary); }
-  .ticket-notch-r { right: -11px; border-left: 2px solid var(--primary); }
-  
   .ticket-header {
     display: flex;
     justify-content: space-between;
@@ -1041,21 +1012,6 @@ const style = `
     padding: 2px 8px;
     border-radius: 100px;
   }
-  .ticket-spot-label {
-    text-align: center;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--muted);
-  }
-  .ticket-spot-num {
-    text-align: center;
-    font-family: 'DM Serif Display', serif;
-    font-size: 3.5rem;
-    line-height: 1.1;
-    color: #fff;
-    margin: 0.25rem 0 0.5rem;
-  }
   .ticket-info-item {
     display: flex;
     justify-content: space-between;
@@ -1064,14 +1020,78 @@ const style = `
   }
   .ticket-info-lbl { color: var(--muted); }
   .ticket-info-val { font-weight: 700; color: #fff; }
-  
+
+  .ticket-benefits {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    text-align: left;
+  }
+  .ticket-benefits-title {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 0.6rem;
+  }
+  .ticket-benefits-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .ticket-benefits-list li {
+    font-size: 13px;
+    color: #fff;
+    font-weight: 500;
+  }
+
+  .ticket-goals {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    text-align: left;
+  }
+  .ticket-goals-title {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 0.65rem;
+  }
+  .ticket-goal-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: #fff;
+    margin-bottom: 0.4rem;
+  }
+  .ticket-goal-count {
+    font-weight: 700;
+    color: var(--primary);
+    font-variant-numeric: tabular-nums;
+  }
+  .ticket-goals-note {
+    margin: 0.65rem 0 0;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+
   .ticket-share-box {
     background: rgba(255,255,255,0.03);
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 0.75rem;
     margin-top: 1rem;
-    text-align: left;
+    text-align: center;
   }
   .ticket-share-link {
     font-size: 11px;
@@ -1084,6 +1104,7 @@ const style = `
     display: block;
     margin-top: 4px;
   }
+  
   .ticket-action-btn {
     width: 100%;
     padding: 0.75rem 1rem;
@@ -1110,27 +1131,6 @@ const style = `
   .ticket-action-btn.outline:hover {
     color: #fff;
     border-color: #555;
-  }
-  
-  .activity-feed {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid rgba(255,255,255,0.06);
-    text-align: left;
-  }
-  .activity-item {
-    font-size: 11px;
-    color: #777;
-    margin-bottom: 4px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .activity-dot {
-    width: 4px;
-    height: 4px;
-    background: var(--primary);
-    border-radius: 50%;
   }
 
   /* HERO REDIRECT MODULE */
@@ -1197,7 +1197,6 @@ const translations = {
     placeholder: "O teu email",
     cta: "Quero entrar →",
     done: "✓ Estás na lista",
-    micro: "Só te contactamos quando abrirmos. Sem spam.",
     success: "✓ Perfeito. Serás dos primeiros a saber.",
     v2h: "A Nossa Missão", v2p: "Empoderar músicos independentes através de ferramentas de descoberta, colaboração sem fricção e capacidades de reserva integradas.",
     howTitle: "Como Funciona", howSub: "Fluxos simplificados para que te possas focar no que importa: a música.",
@@ -1232,10 +1231,9 @@ const translations = {
     compF: "Funcionalidade", compMECA: "MECA", compV: "Vampr", compB: "BandMix",
     cf1: "Swipe Discovery (Flash Mode)", cf2: "Booking de Estúdio/Ensaios", cf3: "Gigs & Live Performance", cf4: "Match Score Engine", cf5: "Perfis de Negócio (Estúdio/Venue)",
     studioBadge: "INFRAESTRUTURA VERIFICADA",
-    bottomH: "Entra na lista de espera.", bottomP: "A MECA lança em Lisboa em breve. Os primeiros a entrar têm acesso antecipado e condições especiais de founding member.",
+    bottomH: "Entra na lista de espera.", bottomP: "A MECA lança em Lisboa em breve.\nJunta-te como Founding Member e garante 12 meses de Pro grátis + um desconto vitalício na subscrição Pro.",
     bottomMicro: "Só te contactamos quando abrirmos. Sem spam.",
     bottomSuccess: "✓ Estás na lista. Até breve.",
-    stickyLabel: "Lançamento em breve",
     navVision: "Visão", navHow: "Como Funciona", navAud: "Vantagens",
     footerTag: "Connect. Play. Get Paid.",
     gigTitle: "Guitarrista Procurado para Digressão",
@@ -1249,15 +1247,20 @@ const translations = {
     waitlistName: "Qual é o teu nome?",
     waitlistRole: "Como descreves o teu perfil?",
     waitlistSelectRole: "Escolhe uma opção...",
-    waitlistSpecialty: "Género / Instrumento / Especialidade",
-    waitlistSpecialtyPlaceholder: "ex: Guitarrista, Produtor, Estúdio...",
     ticketTitle: "MECA ACCESS PASS",
-    ticketQueueMsg: "A tua posição de acesso antecipado",
-    ticketBoostMsg: "⚡ Sobe posições partilhando o teu ticket com outros músicos!",
-    ticketRefLink: "O teu link de convite único:",
-    ticketCopied: "Link copiado! ⚡",
-    ticketCopyBtn: "Copiar Link",
     ticketResetBtn: "Registar outro email",
+    ticketBenefitsTitle: "Benefícios desbloqueados",
+    ticketBenefit1: "✓ Acesso antecipado",
+    ticketBenefit2: "✓ Badge Founding Member",
+    ticketBenefit3: "✓ Benefícios exclusivos no lançamento",
+    ticketGoalsTitle: "Objetivo para Lisboa",
+    ticketGoalMusicians: "🎸 Músicos",
+    ticketGoalStudios: "🎙️ Estúdios",
+    ticketGoalVenues: "🏠 Venues",
+    ticketGoalsNote: "Quando atingirmos estes números, abrimos o acesso à cidade.",
+    ticketRefLink: "O teu link de convite único:",
+    ticketCopied: "Link copiado!",
+    ticketCopyBtn: "Copiar Link",
     joinedActivity: "juntou-se à fila há uns momentos",
     roleMusician: "Músico / Artista",
     roleBand: "Representante de Banda",
@@ -1274,7 +1277,6 @@ const translations = {
     placeholder: "Your email",
     cta: "Join the list →",
     done: "✓ You're in",
-    micro: "We'll only reach out when we launch. No spam.",
     success: "✓ Perfect. You'll be among the first to know.",
     v2h: "Our Mission", v2p: "Empower independent musicians through powerful discovery tools, frictionless collaboration, and integrated booking capabilities.",
     howTitle: "How It Works", howSub: "Simplified flows so you can focus on what matters: the music.",
@@ -1309,10 +1311,9 @@ const translations = {
     compF: "Feature", compMECA: "MECA", compV: "Vampr", compB: "BandMix",
     cf1: "Swipe Discovery (Flash Mode)", cf2: "Studio/Rehearsal Booking", cf3: "Gigs & Live Performance", cf4: "Match Score Engine", cf5: "Business Profiles (Studio/Venue)",
     studioBadge: "VERIFIED INFRASTRUCTURE",
-    bottomH: "Join the waiting list.", bottomP: "MECA launches in Lisbon soon. The first to join get early access and special founding member conditions.",
+    bottomH: "Join the waiting list.", bottomP: "MECA launches in Lisbon soon.\nJoin as a Founding Member and get 12 months of Pro free + a lifetime discount on the Pro subscription.",
     bottomMicro: "We'll only reach out when we launch. No spam.",
     bottomSuccess: "✓ You're on the list. See you soon.",
-    stickyLabel: "Launching soon",
     navVision: "Vision", navHow: "How It Works", navAud: "Benefits",
     footerTag: "Connect. Play. Get Paid.",
     gigTitle: "Lead Guitarist Needed for Tour",
@@ -1326,15 +1327,20 @@ const translations = {
     waitlistName: "What is your name?",
     waitlistRole: "How do you define your profile?",
     waitlistSelectRole: "Choose an option...",
-    waitlistSpecialty: "Genre / Instrument / Specialty",
-    waitlistSpecialtyPlaceholder: "e.g.: Guitarist, Producer, Rehearsal Studio...",
     ticketTitle: "MECA ACCESS PASS",
-    ticketQueueMsg: "Your early access position",
-    ticketBoostMsg: "⚡ Move up in line by sharing your ticket with other musicians!",
-    ticketRefLink: "Your unique invite link:",
-    ticketCopied: "Link copied! ⚡",
-    ticketCopyBtn: "Copy Link",
     ticketResetBtn: "Register another email",
+    ticketBenefitsTitle: "Unlocked benefits",
+    ticketBenefit1: "✓ Early access",
+    ticketBenefit2: "✓ Founding Member badge",
+    ticketBenefit3: "✓ Exclusive launch perks",
+    ticketGoalsTitle: "Lisbon goal",
+    ticketGoalMusicians: "🎸 Musicians",
+    ticketGoalStudios: "🎙️ Studios",
+    ticketGoalVenues: "🏠 Venues",
+    ticketGoalsNote: "When we hit these numbers, we open access to the city.",
+    ticketRefLink: "Your unique invite link:",
+    ticketCopied: "Link copied!",
+    ticketCopyBtn: "Copy Link",
     joinedActivity: "joined the line moments ago",
     roleMusician: "Musician / Artist",
     roleBand: "Band Representative",
@@ -1372,7 +1378,6 @@ function WaitingForm({ lang, dark }: WaitingFormProps) {
     name: string;
     email: string;
     role: string;
-    specialty: string;
     queueNum: number;
     referrals: number;
   } | null>(() => {
@@ -1387,7 +1392,6 @@ function WaitingForm({ lang, dark }: WaitingFormProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
-  const [specialty, setSpecialty] = useState("");
   const [copied, setCopied] = useState(false);
 
   // Sync state between any waitlist forms on the page
@@ -1420,7 +1424,6 @@ function WaitingForm({ lang, dark }: WaitingFormProps) {
       name: name || "Artist",
       email,
       role: role || "roleMusician",
-      specialty: specialty || "Geral",
       queueNum: finalQueue,
       referrals: 0
     };
@@ -1449,52 +1452,21 @@ function WaitingForm({ lang, dark }: WaitingFormProps) {
       setName("");
       setEmail("");
       setRole("");
-      setSpecialty("");
       window.dispatchEvent(new Event("meca_waitlist_update"));
     } catch (err) {
       console.error(err);
     }
   };
 
-  const handleBoost = () => {
-    if (!ticket) return;
-    const updated = {
-      ...ticket,
-      queueNum: Math.max(1, ticket.queueNum - 48),
-      referrals: ticket.referrals + 1
-    };
-    try {
-      localStorage.setItem("meca_waitlist_ticket", JSON.stringify(updated));
-      setTicket(updated);
-      window.dispatchEvent(new Event("meca_waitlist_update"));
-    } catch {}
-  };
-
-  const recentActivities = lang === "pt" ? [
-    { name: "Bruno", spec: "Guitarrista", info: "registo nacional validado" },
-    { name: "Rita Costa", spec: "Vocalista", info: "posição #2481 adquirida" },
-    { name: "Catarina", spec: "Estúdio de Ensaios", info: "infraestrutura verificada" }
-  ] : [
-    { name: "Bruno", spec: "Guitarist", info: "profile certified" },
-    { name: "Rita Costa", spec: "Vocalist", info: "secured spot #2481" },
-    { name: "Catarina", spec: "Rehearsal Space", info: "studio validated" }
-  ];
-
   if (ticket) {
     return (
       <div className="vip-ticket fade-in mx-auto">
-        <div className="ticket-notch-l" />
-        <div className="ticket-notch-r" />
-        
         <div className="ticket-header">
           <span className="ticket-logo">MECA VIP PASS</span>
           <span className="ticket-badge">FOUNDING MEMBER</span>
         </div>
 
-        <div className="ticket-spot-label">{t(lang, "ticketQueueMsg")}</div>
-        <div className="ticket-spot-num">#{ticket.queueNum}</div>
-
-        <div style={{ marginTop: '1.25rem', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '1rem' }}>
+        <div style={{ marginTop: '0.25rem', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '1rem' }}>
           <div className="ticket-info-item">
             <span className="ticket-info-lbl">{lang === 'pt' ? 'Nome' : 'Name'}</span>
             <span className="ticket-info-val">{ticket.name}</span>
@@ -1503,43 +1475,48 @@ function WaitingForm({ lang, dark }: WaitingFormProps) {
             <span className="ticket-info-lbl">{lang === 'pt' ? 'Função' : 'Role'}</span>
             <span className="ticket-info-val">{convertRoleToLabel(ticket.role, lang)}</span>
           </div>
-          <div className="ticket-info-item">
-            <span className="ticket-info-lbl">{lang === 'pt' ? 'Especialidade' : 'Specialty'}</span>
-            <span className="ticket-info-val">{ticket.specialty}</span>
-          </div>
-          <div className="ticket-info-item">
-            <span className="ticket-info-lbl">Email</span>
-            <span className="ticket-info-val" style={{ fontSize: '11px', opacity: 0.8 }}>{ticket.email}</span>
-          </div>
         </div>
 
-        <div className="ticket-share-box text-center">
-          <span className="wl-label" style={{ display: 'block', marginBottom: '4px', fontSize: '10px' }}>{t(lang, "ticketRefLink")}</span>
+        <div className="ticket-benefits">
+          <span className="ticket-benefits-title">{t(lang, "ticketBenefitsTitle")}</span>
+          <ul className="ticket-benefits-list">
+            <li>{t(lang, "ticketBenefit1")}</li>
+            <li>{t(lang, "ticketBenefit2")}</li>
+            <li>{t(lang, "ticketBenefit3")}</li>
+          </ul>
+        </div>
+
+        <div className="ticket-goals">
+          <span className="ticket-goals-title">{t(lang, "ticketGoalsTitle")}</span>
+          <div className="ticket-goal-row">
+            <span>{t(lang, "ticketGoalMusicians")}</span>
+            <span className="ticket-goal-count">27 / 100</span>
+          </div>
+          <div className="ticket-goal-row">
+            <span>{t(lang, "ticketGoalStudios")}</span>
+            <span className="ticket-goal-count">8 / 30</span>
+          </div>
+          <div className="ticket-goal-row">
+            <span>{t(lang, "ticketGoalVenues")}</span>
+            <span className="ticket-goal-count">5 / 20</span>
+          </div>
+          <p className="ticket-goals-note">{t(lang, "ticketGoalsNote")}</p>
+        </div>
+
+        <div className="ticket-share-box">
+          <span className="wl-label" style={{ display: 'block', marginBottom: '4px', fontSize: '10px' }}>
+            {t(lang, "ticketRefLink")}
+          </span>
           <span className="ticket-share-link">
             {window.location.origin}/?ref={ticket.queueNum}
           </span>
-          <div style={{ display: 'flex', gap: '8px', marginTop: '12px', justifyContent: 'center' }}>
-            <button className="ticket-action-btn primary" style={{ margin: 0, padding: '0.5rem 1rem' }} onClick={handleCopyLink}>
-              {copied ? t(lang, "ticketCopied") : t(lang, "ticketCopyBtn")}
-            </button>
-            <button className="ticket-action-btn outline" style={{ margin: 0, padding: '0.5rem 1rem' }} onClick={handleBoost}>
-              ⚡ Boost (+48 spots)
-            </button>
-          </div>
-        </div>
-
-        <div className="activity-feed">
-          <span className="wl-label" style={{ fontSize: '9px', opacity: 0.5, display: 'block', marginBottom: '6px' }}>
-            {lang === 'pt' ? 'ACTIVIDADE EM LISBOA' : 'LISBON ACTIVITY'}
-          </span>
-          {recentActivities.map((act, idx) => (
-            <div className="activity-item" key={idx}>
-              <div className="activity-dot" />
-              <span>
-                <strong>{act.name}</strong> ({act.spec}) — {act.info}
-              </span>
-            </div>
-          ))}
+          <button
+            className="ticket-action-btn primary"
+            style={{ marginTop: '12px', padding: '0.5rem 1rem' }}
+            onClick={handleCopyLink}
+          >
+            {copied ? t(lang, "ticketCopied") : t(lang, "ticketCopyBtn")}
+          </button>
         </div>
 
         <button className="ticket-action-btn outline" style={{ marginTop: '1.5rem', fontSize: '11px' }} onClick={handleReset}>
@@ -1604,98 +1581,8 @@ function WaitingForm({ lang, dark }: WaitingFormProps) {
           </select>
         </div>
 
-        <div className="wl-field-group">
-          <label className="wl-label">{t(lang, "waitlistSpecialty")}</label>
-          <input
-            className="waiting-input"
-            style={{ width: '100%' }}
-            type="text"
-            placeholder={t(lang, "waitlistSpecialtyPlaceholder")}
-            value={specialty}
-            onChange={(e) => setSpecialty(e.target.value)}
-            required
-          />
-        </div>
-
         <button className="waiting-btn" style={{ width: '100%', marginTop: '0.5rem', display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em' }} type="submit">
           {t(lang, "cta")}
-        </button>
-      </form>
-
-      <p className="form-micro" style={{ marginTop: '0.75rem', textAlign: 'center', opacity: 0.6 }}>
-        {t(lang, "micro")}
-      </p>
-    </div>
-  );
-}
-
-interface StickyBarProps {
-  lang: "pt" | "en";
-}
-
-function StickyBar({ lang }: StickyBarProps) {
-  const [done, setDone] = useState(() => {
-    try {
-      return localStorage.getItem("meca_waitlist_ticket") !== null;
-    } catch {
-      return false;
-    }
-  });
-  const [email, setEmail] = useState("");
-
-  useEffect(() => {
-    const handleUpdate = () => {
-      try {
-        setDone(localStorage.getItem("meca_waitlist_ticket") !== null);
-      } catch {
-        setDone(false);
-      }
-    };
-    window.addEventListener("meca_waitlist_update", handleUpdate);
-    return () => window.removeEventListener("meca_waitlist_update", handleUpdate);
-  }, []);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-
-    const baseNum = 2482;
-    const offset = Math.floor(Math.random() * 9) + 1;
-    const finalQueue = baseNum + offset;
-
-    const newTicket = {
-      name: lang === 'pt' ? "Fundador" : "Founder",
-      email,
-      role: "roleMusician",
-      specialty: lang === 'pt' ? "Acesso Rápido" : "Quick Access",
-      queueNum: finalQueue,
-      referrals: 0
-    };
-
-    try {
-      localStorage.setItem("meca_waitlist_ticket", JSON.stringify(newTicket));
-      setDone(true);
-      window.dispatchEvent(new Event("meca_waitlist_update"));
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  return (
-    <div className="sticky-bar">
-      <span className="sticky-label">{t(lang, "stickyLabel")}</span>
-      <form className="sticky-form" onSubmit={handleSubmit}>
-        <input 
-          className="sticky-input" 
-          type="email" 
-          placeholder={t(lang, "placeholder")} 
-          required 
-          disabled={done} 
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <button className={`sticky-btn${done ? ' done' : ''}`} type="submit" disabled={done}>
-          {done ? "✓" : t(lang, "cta")}
         </button>
       </form>
     </div>
@@ -2389,7 +2276,6 @@ export default function App() {
 
       </div>
 
-      <StickyBar lang={lang} />
     </div>
   );
 }
