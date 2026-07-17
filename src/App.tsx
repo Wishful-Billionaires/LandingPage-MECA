@@ -29,7 +29,7 @@ const style = `
   .fade-in-4 { animation: fadeIn 0.8s 0.6s ease both; }
   @keyframes fadeIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
   .float { animation: floatStudio 5s ease-in-out infinite; }
-  .float-2 { animation: floatArtist 6s 1s ease-in-out infinite; }
+  .float-2 { animation: floatArtist 6s 1s ease-in-out infinite backwards; }
   @keyframes floatStudio { 0%,100%{transform:translateY(0) rotate(-5deg)} 50%{transform:translateY(-8px) rotate(-4deg)} }
   @keyframes floatArtist { 0%,100%{transform:translateY(0) rotate(5deg)} 50%{transform:translateY(-8px) rotate(4deg)} }
   .float-center { animation: floatC 4s ease-in-out infinite; }
@@ -88,7 +88,7 @@ const style = `
 
   /* FLOATING CARDS */
   .fc-studio { position:absolute; top:10%; left:12px; width:220px; transform:rotate(-3deg); z-index:10; }
-  .fc-artist { position:absolute; top:27%; right:12px; width:205px; transform:rotate(1deg); z-index:10; }
+  .fc-artist { position:absolute; top:27%; right:12px; width:205px; transform:rotate(2deg); z-index:10; }
   .fc-gig { position:absolute; top:55%; left:50%; transform:translate(-50%,-50%); width:270px; z-index:20; }
   .card-dark { background:#111; border-radius:16px; border:1px solid #333; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.5); }
   .card-img { height:90px; background:#1a1a1a; overflow:hidden; position:relative; }
