@@ -1,0 +1,17 @@
+services:
+  meca-api:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.meca-api.rule=Host(`api.meca-app.com`)"
+      - "traefik.http.routers.meca-api.entrypoints=websecure"
+      - "traefik.http.routers.meca-api.tls.certresolver=letsencrypt"
+      - "traefik.http.services.meca-api.loadbalancer.server.port=3001"
+
+networks:
+  proxy:
+    external: true

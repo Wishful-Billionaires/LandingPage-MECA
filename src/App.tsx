@@ -1443,6 +1443,18 @@ function WaitingForm({ lang, dark }: WaitingFormProps) {
     } catch (err) {
       console.error(err);
     }
+
+    fetch("https://api.meca-app.com/waitlist", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: newTicket.name,
+        email: newTicket.email,
+        role: newTicket.role
+      })
+    }).catch((err) => {
+      console.error("Waitlist submission failed to reach the server:", err);
+    });
   };
 
   const handleCopyLink = () => {
