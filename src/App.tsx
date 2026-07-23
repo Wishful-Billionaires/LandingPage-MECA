@@ -1236,7 +1236,7 @@ const translations = {
     cf1: "Flash Mode", cf2: "Booking de Estúdio", cf3: "Gigs & Live Performance", cf4: "Match Score Engine", cf5: "Perfis de Negócio", cf6: "Jams & Eventos",
     cd1: "Descobre músicos e bandas com swipe, em tempo real.", cd2: "Reserva estúdios e salas de ensaio diretamente na app.", cd3: "Candidata-te a gigs e digressões com o teu perfil.", cd4: "IA que calcula compatibilidade musical entre perfis.", cd5: "Estúdios e venues com perfil próprio e agenda integrada.", cd6: "Encontra jams, e concertos ao vivo perto de ti.",
     studioBadge: "INFRAESTRUTURA VERIFICADA",
-    bottomH: "Entra na lista de espera.", bottomP: "A MECA lança em Lisboa em breve.\nJunta-te como Founding Member e garante 12 meses de Pro grátis + um desconto vitalício na subscrição Pro.",
+    bottomH: "Entra na lista de espera.", bottomP: "A MECA lança em Lisboa em breve.\nJunta-te como Founding Member.",
     bottomMicro: "Só te contactamos quando abrirmos. Sem spam.",
     bottomSuccess: "✓ Estás na lista. Até breve.",
     navVision: "Visão", navHow: "Como Funciona", navAud: "Vantagens",
@@ -1317,7 +1317,7 @@ const translations = {
     cf1: "Flash Mode", cf2: "Studio Booking", cf3: "Gigs & Live Performance", cf4: "Match Score Engine", cf5: "Business Profiles", cf6: "Jams & Events",
     cd1: "Discover musicians and bands with swipe, in real time.", cd2: "Book studios and rehearsal rooms directly in the app.", cd3: "Apply to gigs and tours with your profile.", cd4: "AI that calculates musical compatibility between profiles.", cd5: "Studios and venues with their own profile and integrated schedule.", cd6: "Find jam sessions and live events near you.",
     studioBadge: "VERIFIED INFRASTRUCTURE",
-    bottomH: "Join the waiting list.", bottomP: "MECA launches in Lisbon soon.\nJoin as a Founding Member and get 12 months of Pro free + a lifetime discount on the Pro subscription.",
+    bottomH: "Join the waiting list.", bottomP: "MECA launches in Lisbon soon.\nJoin as a Founding Member.",
     bottomMicro: "We'll only reach out when we launch. No spam.",
     bottomSuccess: "✓ You're on the list. See you soon.",
     navVision: "Vision", navHow: "How It Works", navAud: "Benefits",
@@ -1506,38 +1506,7 @@ function WaitingForm({ lang, dark }: WaitingFormProps) {
           </ul>
         </div>
 
-        <div className="ticket-goals">
-          <span className="ticket-goals-title">{t(lang, "ticketGoalsTitle")}</span>
-          <div className="ticket-goal-row">
-            <span>{t(lang, "ticketGoalMusicians")}</span>
-            <span className="ticket-goal-count">27 / 100</span>
-          </div>
-          <div className="ticket-goal-row">
-            <span>{t(lang, "ticketGoalStudios")}</span>
-            <span className="ticket-goal-count">8 / 30</span>
-          </div>
-          <div className="ticket-goal-row">
-            <span>{t(lang, "ticketGoalVenues")}</span>
-            <span className="ticket-goal-count">5 / 20</span>
-          </div>
-          <p className="ticket-goals-note">{t(lang, "ticketGoalsNote")}</p>
-        </div>
 
-        <div className="ticket-share-box">
-          <span className="wl-label" style={{ display: 'block', marginBottom: '4px', fontSize: '10px' }}>
-            {t(lang, "ticketRefLink")}
-          </span>
-          <span className="ticket-share-link">
-            {window.location.origin}/?ref={ticket.queueNum}
-          </span>
-          <button
-            className="ticket-action-btn primary"
-            style={{ marginTop: '12px', padding: '0.5rem 1rem' }}
-            onClick={handleCopyLink}
-          >
-            {copied ? t(lang, "ticketCopied") : t(lang, "ticketCopyBtn")}
-          </button>
-        </div>
 
         <button className="ticket-action-btn outline" style={{ marginTop: '1.5rem', fontSize: '11px' }} onClick={handleReset}>
           {t(lang, "ticketResetBtn")}
