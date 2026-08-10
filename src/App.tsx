@@ -1267,12 +1267,11 @@ const translations = {
     ticketCopied: "Link copiado!",
     ticketCopyBtn: "Copiar Link",
     joinedActivity: "juntou-se à fila há uns momentos",
-    roleMusician: "Músico / Artista",
-    roleBand: "Representante de Banda",
-    roleStudio: "Estúdio de Gravação",
-    roleVenue: "Venue / Promotor de Concertos",
-    roleProducer: "Produtor / Som",
-    roleOther: "Outro",
+    roleArtist: "Músico / Artista",
+    roleStudio: "Estúdio / Sala de Ensaios",
+    roleVenue: "Venue / Sala de Espectáculos",
+    rolePromoter: "Promotor de Eventos",
+    roleFan: "Fã / Espectador",
   },
   en: {
     eyebrow: "The professional music platform",
@@ -1348,12 +1347,11 @@ const translations = {
     ticketCopied: "Link copied!",
     ticketCopyBtn: "Copy Link",
     joinedActivity: "joined the line moments ago",
-    roleMusician: "Musician / Artist",
-    roleBand: "Band Representative",
-    roleStudio: "Recording Studio",
-    roleVenue: "Live Music Venue / Promoter",
-    roleProducer: "Producer / Sound Engineer",
-    roleOther: "Other",
+    roleArtist: "Musician / Artist",
+    roleStudio: "Studio / Rehearsal Space",
+    roleVenue: "Venue / Live Music Space",
+    rolePromoter: "Event Promoter",
+    roleFan: "Fan",
   }
 };
 
@@ -1371,12 +1369,11 @@ interface WaitingFormProps {
 
 function convertRoleToLabel(role: string, lang: "pt" | "en"): string {
   switch (role) {
-    case "roleMusician": return t(lang, "roleMusician");
-    case "roleBand": return t(lang, "roleBand");
+    case "roleArtist": return t(lang, "roleArtist");
     case "roleStudio": return t(lang, "roleStudio");
     case "roleVenue": return t(lang, "roleVenue");
-    case "roleProducer": return t(lang, "roleProducer");
-    case "roleOther": return t(lang, "roleOther");
+    case "rolePromoter": return t(lang, "rolePromoter");
+    case "roleFan": return t(lang, "roleFan");
     default: return role;
   }
 }
@@ -1431,7 +1428,7 @@ function WaitingForm({ lang, dark }: WaitingFormProps) {
     const newTicket = {
       name: name || "Artist",
       email,
-      role: role || "roleMusician",
+      role: role || "roleArtist",
       queueNum: finalQueue,
       referrals: 0
     };
@@ -1562,12 +1559,11 @@ function WaitingForm({ lang, dark }: WaitingFormProps) {
           <label className="wl-label">{t(lang, "waitlistRole")}</label>
           <select className="wl-select" value={role} onChange={(e) => setRole(e.target.value)} required>
             <option value="">{t(lang, "waitlistSelectRole")}</option>
-            <option value="roleMusician">{t(lang, "roleMusician")}</option>
-            <option value="roleBand">{t(lang, "roleBand")}</option>
+            <option value="roleArtist">{t(lang, "roleArtist")}</option>
             <option value="roleStudio">{t(lang, "roleStudio")}</option>
             <option value="roleVenue">{t(lang, "roleVenue")}</option>
-            <option value="roleProducer">{t(lang, "roleProducer")}</option>
-            <option value="roleOther">{t(lang, "roleOther")}</option>
+            <option value="rolePromoter">{t(lang, "rolePromoter")}</option>
+            <option value="roleFan">{t(lang, "roleFan")}</option>
           </select>
         </div>
 

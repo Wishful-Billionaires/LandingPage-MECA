@@ -13,12 +13,11 @@ if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
 const ALLOWED_ROLES = new Set([
-  'roleMusician',
-  'roleBand',
+  'roleArtist',
   'roleStudio',
   'roleVenue',
-  'roleProducer',
-  'roleOther'
+  'rolePromoter',
+  'roleFan'
 ]);
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
