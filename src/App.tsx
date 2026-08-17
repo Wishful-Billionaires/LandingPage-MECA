@@ -46,7 +46,7 @@ const style = `
   }
   .meca-nav .inner { display:flex; align-items:center; justify-content:space-between; }
   .nav-logo { display:flex; align-items:center; gap:0.5rem; }
-  .nav-logo-text { font-weight:900; font-size:20px; letter-spacing:-0.02em; }
+  .nav-logo-img { display:block; height:36px; width:auto; }
   .nav-links { display:flex; gap:2rem; }
   .nav-links a { font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); transition:color 0.2s; }
   .nav-links a:hover { color:var(--primary); }
@@ -781,7 +781,7 @@ const style = `
   /* STICKY */
   /* FOOTER NAV */
   .footer-bar { padding:1.5rem 0; display:flex; justify-content:space-between; align-items:center; }
-  .footer-logo { font-family:'DM Serif Display',serif; font-size:20px; }
+  .footer-logo { display:block; height:36px; width:auto; }
   .footer-tag { font-size:14px; color:var(--muted); }
 
   @media (max-width:768px) {
@@ -1635,7 +1635,7 @@ export default function App() {
       <nav className="meca-nav">
         <div className="wrap inner">
           <div className="nav-logo">
-            <span className="nav-logo-text">MECA</span>
+            <img className="nav-logo-img" src="/meca-logo.png" alt="MECA" />
           </div>
           <div className="nav-links">
             <a href="#vision">{s("navVision")}</a>
@@ -2246,7 +2246,7 @@ export default function App() {
         </div>
 
         <div className="footer-bar">
-          <span className="footer-logo">MECA</span>
+          <img className="footer-logo" src="/meca-logo.png" alt="MECA" />
           <span className="footer-tag">{s("footerTag")}</span>
         </div>
 
