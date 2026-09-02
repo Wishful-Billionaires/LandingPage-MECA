@@ -1,0 +1,43 @@
+<mjml>
+  <mj-head>
+    <mj-title>MECA — You're on the list</mj-title>
+    <mj-font name="DM Sans" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&display=swap" />
+    <mj-attributes>
+      <mj-all font-family="'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" />
+      <mj-section background-color="#080808" />
+      <mj-text color="#999999" font-size="15px" line-height="1.7" />
+    </mj-attributes>
+  </mj-head>
+
+  <mj-body background-color="#080808">
+    <mj-section padding="40px 24px">
+      <mj-column>
+        <mj-text align="center" padding="0 0 24px">
+          <span style="font-size:20px; font-weight:900; letter-spacing:0.12em; color:#ffffff;">MECA</span>
+        </mj-text>
+        <mj-text align="center" color="#ffffff" font-size="26px" font-weight="700" line-height="1.3" padding="0 0 12px">
+          You're on the list, {firstName}.
+        </mj-text>
+        <mj-text align="center" font-size="15px" padding="0 0 24px">
+          Empty slots are about to become booked slots. Connect your studio with artists who are ready to record.
+        </mj-text>
+        <mj-text align="center" font-size="15px" font-weight="700" color="#c8f064" padding="0 0 8px">What's next for you</mj-text>
+        <mj-text align="center" font-size="15px" padding="0 0 24px">
+          <span style="display:block;">🎚️ &nbsp;List your space with rates and equipment</span>
+          <span style="display:block;">📅 &nbsp;Create rooms and manage bookings</span>
+          <span style="display:block;">💰 &nbsp;Turn idle time into revenue</span>
+        </mj-text>
+        <mj-text align="center" font-size="13px" color="#666666" padding="0 0 8px">
+          <span style="color:#ffffff; font-weight:700;">Connect. Play. Get Paid.</span>
+        </mj-text>
+        <mj-text align="center" font-size="12px" color="#555555">
+          — The MECA team, for {lastName}
+        </mj-text>
+        <mj-text align="center" font-size="11px" color="#888888" padding="16px 0 0">
+          You received this because you joined the MECA waitlist.
+          <a href="{unsubscribe_link}" style="color:#c8f064; text-decoration:underline;">Unsubscribe</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
