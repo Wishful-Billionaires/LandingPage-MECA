@@ -4,13 +4,56 @@ import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import { createClient } from '@supabase/supabase-js';
 
-const { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, ALLOWED_ORIGIN, PORT } = process.env;
+const {
+  SUPABASE_URL,
+  SUPABASE_SERVICE_ROLE_KEY,
+  ALLOWED_ORIGIN,
+  PORT,
+  LOOPS_API_KEY,
+  LOOPS_TRANSACTIONAL_ID,
+} = process.env;
 
 if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
   throw new Error('SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set');
 }
 
+const allowedOrigins = (ALLOWED_ORIGIN || 'https://www.meca-app.com')
+  .split(',')
+  .map((origin) => origin.trim());
+
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+
+// Send the waitlist confirmation email via Loops. Never blocks or fails the
+// request: DB insert already succeeded, so we only log send problems.
+async function sendWaitlistEmail({ name, email }) {
+  if (!LOOPS_API_KEY || !LOOPS_TRANSACTIONAL_ID) {
+    console.warn('Loops not configured, skipping confirmation email');
+    return;
+  }
+  try {
+    const res = await fetch('https://app.loops.so/api/v1/transactional', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${LOOPS_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        transactionalId: LOOPS_TRANSACTIONAL_ID,
+        addToAudience: true,
+        dataVariables: { name },
+      }),
+    });
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok || !body.success) {
+      console.error('Loops confirmation email failed:', res.status, body);
+    } else {
+      console.log(`Loops confirmation email sent to ${email}`);
+    }
+  } catch (err) {
+    console.error('Loops confirmation email error:', err);
+  }
+}
 
 const ALLOWED_ROLES = new Set([
   'roleArtist',
@@ -31,7 +74,7 @@ app.set('trust proxy', 1);
 app.use(express.json({ limit: '10kb' }));
 app.use(
   cors({
-    origin: ALLOWED_ORIGIN || 'https://meca-app.com'
+    origin: allowedOrigins
   })
 );
 
@@ -66,6 +109,8 @@ app.post('/waitlist', waitlistLimiter, async (req, res) => {
     console.error('Supabase insert failed:', error);
     return res.status(502).json({ error: 'Failed to store submission' });
   }
+
+  await sendWaitlistEmail({ name: name.trim(), email: email.trim().toLowerCase() });
 
   return res.status(201).json({ ok: true });
 });

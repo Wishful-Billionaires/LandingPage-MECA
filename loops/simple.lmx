@@ -1,0 +1,5 @@
+<Style backgroundColor="#080808" bodyColor="#111111" bodyXPadding="16" bodyYPadding="32" textBaseColor="#999999" textBaseFontSize="15" textBaseLineHeight="170" heading1Color="#ffffff" />
+<Paragraph align="center" fontSize="22" lineHeight="100" paddingBottom="24"><Strong textColor="#ffffff">MECA</Strong></Paragraph>
+<H1 align="center" paddingBottom="8">You're on the list, {data.name}</H1>
+<Paragraph align="center" paddingBottom="24">MECA launches in Lisbon soon. We'll let you know when the doors open.</Paragraph>
+<Paragraph align="center" fontSize="13"><Strong textColor="#ffffff">Connect. Play. Get Paid.</Strong></Paragraph>
