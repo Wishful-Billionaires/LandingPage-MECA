@@ -22,33 +22,37 @@ API_HEALTH_URL="https://api.meca-app.com/health"
 # package.json / package-lock.json: unchanged for this deploy (no new deps —
 # the Loops call uses Node 22's built-in fetch), but copied anyway so the
 # script stays correct when dependencies do change.
-# .env is copied in full (see step 2) so remote config always matches local.
 FILES=(index.js package.json package-lock.json Dockerfile docker-compose.yml)
 
 echo "==> 1/4 Copying ${FILES[*]} to ${REMOTE}:${REMOTE_DIR}"
 scp "${FILES[@]/#/$LOCAL_DIR/}" "${REMOTE}:${REMOTE_DIR}/"
 
-echo "==> 2/4 Copying full .env to ${REMOTE}:${REMOTE_DIR}/"
-if [ ! -f "${LOCAL_DIR}/.env" ]; then
-  echo "ERROR: ${LOCAL_DIR}/.env not found — create it and re-run." >&2
+echo "==> 2/4 Checking remote .env for Loops variables"
+if ! ssh "$REMOTE" "test -f ${REMOTE_DIR}/.env"; then
+  echo "ERROR: ${REMOTE}:${REMOTE_DIR}/.env not found — add it manually and re-run." >&2
   exit 1
 fi
-scp "${LOCAL_DIR}/.env" "${REMOTE}:${REMOTE_DIR}/.env" || {
-  echo "ERROR: failed to upload .env." >&2
-  exit 1
-}
 
-# Confirm the key variables made it over (values stay hidden on the remote).
 missing=()
-for var in SUPABASE_URL LOOPS_API_KEY LOOPS_TRANSACTIONAL_ID; do
+for var in LOOPS_API_KEY LOOPS_TRANSACTIONAL_ID; do
   if ! ssh "$REMOTE" "grep -q \"^${var}=\" ${REMOTE_DIR}/.env"; then
     missing+=("$var")
   fi
 done
+
 if [ "${#missing[@]}" -gt 0 ]; then
-  echo "    WARNING: variables missing on remote after upload: ${missing[*]}" >&2
+  echo "    missing on remote: ${missing[*]} — appending from local .env"
+  for var in "${missing[@]}"; do
+    line="$(grep "^${var}=" "${LOCAL_DIR}/.env" | head -n1 || true)"
+    if [ -z "$line" ]; then
+      echo "ERROR: ${var} not in local ${LOCAL_DIR}/.env either." >&2
+      exit 1
+    fi
+    printf '%s\n' "$line" | ssh "$REMOTE" "cat >> ${REMOTE_DIR}/.env"
+    echo "    + ${var}"
+  done
 else
-  echo "    .env uploaded and all key variables present"
+  echo "    all Loops variables present — nothing to do"
 fi
 
 echo "==> 3/4 Rebuilding image and recreating container"
