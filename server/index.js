@@ -10,7 +10,6 @@ const {
   ALLOWED_ORIGIN,
   PORT,
   LOOPS_API_KEY,
-  LOOPS_TRANSACTIONAL_ID,
 } = process.env;
 
 if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
@@ -23,15 +22,29 @@ const allowedOrigins = (ALLOWED_ORIGIN || 'https://www.meca-app.com')
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-// Send the waitlist confirmation email via Loops. Never blocks or fails the
-// request: DB insert already succeeded, so we only log send problems.
-async function sendWaitlistEmail({ name, email }) {
-  if (!LOOPS_API_KEY || !LOOPS_TRANSACTIONAL_ID) {
-    console.warn('Loops not configured, skipping confirmation email');
+// Split a full name into first/last at the first space.
+// "Nuno Pereira" -> { firstName: "Nuno", lastName: "Pereira" }
+// "Nuno"         -> { firstName: "Nuno", lastName: "" }
+function splitName(fullName) {
+  const idx = fullName.indexOf(' ');
+  if (idx === -1) {
+    return { firstName: fullName, lastName: '' };
+  }
+  return { firstName: fullName.slice(0, idx), lastName: fullName.slice(idx + 1) };
+}
+
+// Register the submitter as a Loops contact via POST /v1/contacts/create.
+// Creating the contact fires the "contact added" (signup) workflow in Loops,
+// which can then branch on `role` and send the right email. Never blocks or
+// fails the request: DB insert already succeeded, so we only log problems.
+async function addContactToLoops({ name, email, role }) {
+  if (!LOOPS_API_KEY) {
+    console.warn('Loops not configured, skipping contact creation');
     return;
   }
+  const { firstName, lastName } = splitName(name);
   try {
-    const res = await fetch('https://app.loops.so/api/v1/transactional', {
+    const res = await fetch('https://app.loops.so/api/v1/contacts/create', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${LOOPS_API_KEY}`,
@@ -39,19 +52,19 @@ async function sendWaitlistEmail({ name, email }) {
       },
       body: JSON.stringify({
         email,
-        transactionalId: LOOPS_TRANSACTIONAL_ID,
-        addToAudience: true,
-        dataVariables: { name },
+        firstName,
+        lastName,
+        role,
       }),
     });
     const body = await res.json().catch(() => ({}));
     if (!res.ok || !body.success) {
-      console.error('Loops confirmation email failed:', res.status, body);
+      console.error('Loops contact creation failed:', res.status, body);
     } else {
-      console.log(`Loops confirmation email sent to ${email}`);
+      console.log(`Loops contact created for ${email}`);
     }
   } catch (err) {
-    console.error('Loops confirmation email error:', err);
+    console.error('Loops contact creation error:', err);
   }
 }
 
@@ -110,7 +123,11 @@ app.post('/waitlist', waitlistLimiter, async (req, res) => {
     return res.status(502).json({ error: 'Failed to store submission' });
   }
 
-  await sendWaitlistEmail({ name: name.trim(), email: email.trim().toLowerCase() });
+  await addContactToLoops({
+    name: name.trim(),
+    email: email.trim().toLowerCase(),
+    role,
+  });
 
   return res.status(201).json({ ok: true });
 });
