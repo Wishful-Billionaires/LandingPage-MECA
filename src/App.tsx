@@ -780,7 +780,7 @@ const style = `
 
   /* STICKY */
   /* FOOTER NAV */
-  .footer-bar { padding:1.5rem 0; display:flex; justify-content:space-between; align-items:center; }
+    .footer-bar { padding:1.5rem 0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
   .footer-logo { display:block; height:36px; width:auto; }
   .footer-tag { font-size:14px; color:var(--muted); }
 
@@ -1397,6 +1397,7 @@ function WaitingForm({ lang, dark }: WaitingFormProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
+  const [consent, setConsent] = useState(false);
   const [copied, setCopied] = useState(false);
 
   // Sync state between any waitlist forms on the page
@@ -1469,6 +1470,7 @@ function WaitingForm({ lang, dark }: WaitingFormProps) {
       setName("");
       setEmail("");
       setRole("");
+      setConsent(false);
       window.dispatchEvent(new Event("meca_waitlist_update"));
     } catch (err) {
       console.error(err);
@@ -1567,7 +1569,38 @@ function WaitingForm({ lang, dark }: WaitingFormProps) {
           </select>
         </div>
 
-        <button className="waiting-btn" style={{ width: '100%', marginTop: '0.5rem', display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em' }} type="submit">
+        {/* Consent checkbox */}
+        <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem', marginTop: '1rem', cursor: 'pointer' }}>
+          <input
+            type="checkbox"
+            checked={consent}
+            onChange={(e) => setConsent(e.target.checked)}
+            required
+            style={{ marginTop: '2px', accentColor: 'var(--primary)', width: 15, height: 15, flexShrink: 0, cursor: 'pointer' }}
+          />
+          <span style={{ fontSize: 12, color: 'var(--muted)', lineHeight: 1.6 }}>
+            {lang === 'pt'
+              ? <>Li e aceito os{' '}
+                  <a href="#" onClick={(e) => { e.preventDefault(); (window as any).__mecaSetPage?.('terms'); }} style={{ color: '#fff', textDecoration: 'underline' }}>Termos de Serviço</a>
+                  {' '}e a{' '}
+                  <a href="#" onClick={(e) => { e.preventDefault(); (window as any).__mecaSetPage?.('privacy'); }} style={{ color: '#fff', textDecoration: 'underline' }}>Política de Privacidade</a>
+                  {' '}da MECA.
+                </>
+              : <>I have read and agree to the MECA{' '}
+                  <a href="#" onClick={(e) => { e.preventDefault(); (window as any).__mecaSetPage?.('terms'); }} style={{ color: '#fff', textDecoration: 'underline' }}>Terms of Service</a>
+                  {' '}and{' '}
+                  <a href="#" onClick={(e) => { e.preventDefault(); (window as any).__mecaSetPage?.('privacy'); }} style={{ color: '#fff', textDecoration: 'underline' }}>Privacy Policy</a>.
+                </>
+            }
+          </span>
+        </label>
+
+        <button
+          className="waiting-btn"
+          style={{ width: '100%', marginTop: '1rem', display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em', opacity: consent ? 1 : 0.45, cursor: consent ? 'pointer' : 'not-allowed', transition: 'opacity 0.2s' }}
+          type="submit"
+          disabled={!consent}
+        >
           {t(lang, "cta")}
         </button>
       </form>
@@ -1575,8 +1608,213 @@ function WaitingForm({ lang, dark }: WaitingFormProps) {
   );
 }
 
+/* ─────────────────────────────────────────────
+   PRIVACY POLICY PAGE
+───────────────────────────────────────────── */
+function PrivacyPage({ lang, onBack }: { lang: "pt" | "en"; onBack: () => void }) {
+  const isPt = lang === "pt";
+  return (
+    <div className="meca-root">
+      <style>{style}</style>
+      <nav className="meca-nav">
+        <div className="wrap inner">
+          <div className="nav-logo">
+            <img className="nav-logo-img" src="/meca-logo.png" alt="MECA" />
+          </div>
+          <button
+            onClick={onBack}
+            style={{ background: "none", border: "1px solid rgba(255,255,255,0.15)", color: "var(--muted)", padding: "0.4rem 1rem", borderRadius: 8, cursor: "pointer", fontSize: 13, fontWeight: 700 }}
+          >
+            ← {isPt ? "Voltar" : "Back"}
+          </button>
+        </div>
+      </nav>
+      <div className="wrap" style={{ paddingTop: "7rem", paddingBottom: "5rem", maxWidth: 760 }}>
+        <p className="hero-eyebrow">{isPt ? "Documentos Legais" : "Legal Documents"}</p>
+        <h1 style={{ fontFamily: "'DM Serif Display', serif", fontSize: "clamp(2.5rem,5vw,3.5rem)", fontWeight: 400, marginBottom: "0.5rem" }}>
+          {isPt ? "Política de Privacidade" : "Privacy Policy"}
+        </h1>
+        <p style={{ color: "var(--muted)", fontSize: 14, marginBottom: "3rem" }}>
+          {isPt ? "Última atualização: setembro de 2026" : "Last updated: September 2026"}
+        </p>
+
+        {[
+          {
+            h: isPt ? "1. Quem somos" : "1. Who we are",
+            p: isPt
+              ? "A MECA é uma plataforma digital desenvolvida para ligar músicos, estúdios e venues. O responsável pelo tratamento de dados é a equipa MECA, contactável através do endereço info@meca-app.com."
+              : "MECA is a digital platform designed to connect musicians, studios, and venues. The data controller is the MECA team, reachable at info@meca-app.com."
+          },
+          {
+            h: isPt ? "2. Dados que recolhemos" : "2. Data we collect",
+            p: isPt
+              ? "Quando te registas na lista de espera, recolhemos o teu nome, endereço de email e perfil (artista, estúdio, venue, promotor ou fã). Não recolhemos dados de pagamento nem dados sensíveis."
+              : "When you register for the waitlist, we collect your name, email address, and profile type (artist, studio, venue, promoter, or fan). We do not collect payment or sensitive data."
+          },
+          {
+            h: isPt ? "3. Como usamos os teus dados" : "3. How we use your data",
+            p: isPt
+              ? "Os teus dados são utilizados exclusivamente para: (a) enviar comunicações relacionadas com o lançamento da MECA; (b) personalizar o teu acesso antecipado; (c) melhorar a plataforma com base no perfil dos utilizadores. Não vendemos nem partilhamos os teus dados com terceiros para fins comerciais."
+              : "Your data is used solely to: (a) send communications related to the MECA launch; (b) personalise your early access; (c) improve the platform based on user profiles. We do not sell or share your data with third parties for commercial purposes."
+          },
+          {
+            h: isPt ? "4. Base legal (RGPD)" : "4. Legal basis (GDPR)",
+            p: isPt
+              ? "O tratamento dos teus dados baseia-se no teu consentimento livre e informado, prestado no momento do registo. Podes retirar esse consentimento a qualquer momento contactando-nos."
+              : "The processing of your data is based on your freely given and informed consent, provided at the time of registration. You may withdraw that consent at any time by contacting us."
+          },
+          {
+            h: isPt ? "5. Retenção de dados" : "5. Data retention",
+            p: isPt
+              ? "Os teus dados serão conservados enquanto mantiveres interesse ativo na plataforma ou até solicitares a sua eliminação. Após o lançamento oficial, será aplicada uma política de retenção específica."
+              : "Your data will be kept as long as you maintain active interest in the platform or until you request deletion. After the official launch, a specific retention policy will apply."
+          },
+          {
+            h: isPt ? "6. Os teus direitos" : "6. Your rights",
+            p: isPt
+              ? "Tens o direito de aceder, retificar, eliminar, limitar ou portar os teus dados pessoais. Para exercer qualquer um destes direitos, envia um email para info@meca-app.com com o assunto 'Privacidade – [ação]'."
+              : "You have the right to access, rectify, erase, restrict, or port your personal data. To exercise any of these rights, send an email to info@meca-app.com with the subject 'Privacy – [action]'."
+          },
+          {
+            h: isPt ? "7. Cookies" : "7. Cookies",
+            p: isPt
+              ? "Esta landing page utiliza o localStorage do browser apenas para guardar o estado local da lista de espera (sem rastreio ou cookies de terceiros)."
+              : "This landing page uses the browser's localStorage solely to save your local waitlist state (no tracking or third-party cookies)."
+          },
+          {
+            h: isPt ? "8. Contacto" : "8. Contact",
+            p: isPt
+              ? "Para qualquer questão relacionada com privacidade, contacta-nos em info@meca-app.com."
+              : "For any privacy-related question, contact us at info@meca-app.com."
+          },
+        ].map(({ h, p }) => (
+          <div key={h} style={{ marginBottom: "2.5rem" }}>
+            <h2 style={{ fontSize: 20, fontWeight: 700, color: "#fff", marginBottom: "0.6rem" }}>{h}</h2>
+            <p style={{ fontSize: 16, color: "var(--muted)", lineHeight: 1.75 }}>{p}</p>
+          </div>
+        ))}
+
+        <div style={{ borderTop: "1px solid var(--border)", paddingTop: "2rem", marginTop: "1rem" }}>
+          <button
+            onClick={onBack}
+            style={{ background: "var(--primary)", border: "none", color: "#000", padding: "0.85rem 2rem", borderRadius: 8, cursor: "pointer", fontSize: 15, fontWeight: 700 }}
+          >
+            ← {isPt ? "Voltar ao início" : "Back to home"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   TERMS OF SERVICE PAGE
+───────────────────────────────────────────── */
+function TermsPage({ lang, onBack }: { lang: "pt" | "en"; onBack: () => void }) {
+  const isPt = lang === "pt";
+  return (
+    <div className="meca-root">
+      <style>{style}</style>
+      <nav className="meca-nav">
+        <div className="wrap inner">
+          <div className="nav-logo">
+            <img className="nav-logo-img" src="/meca-logo.png" alt="MECA" />
+          </div>
+          <button
+            onClick={onBack}
+            style={{ background: "none", border: "1px solid rgba(255,255,255,0.15)", color: "var(--muted)", padding: "0.4rem 1rem", borderRadius: 8, cursor: "pointer", fontSize: 13, fontWeight: 700 }}
+          >
+            ← {isPt ? "Voltar" : "Back"}
+          </button>
+        </div>
+      </nav>
+      <div className="wrap" style={{ paddingTop: "7rem", paddingBottom: "5rem", maxWidth: 760 }}>
+        <p className="hero-eyebrow">{isPt ? "Documentos Legais" : "Legal Documents"}</p>
+        <h1 style={{ fontFamily: "'DM Serif Display', serif", fontSize: "clamp(2.5rem,5vw,3.5rem)", fontWeight: 400, marginBottom: "0.5rem" }}>
+          {isPt ? "Termos de Serviço" : "Terms of Service"}
+        </h1>
+        <p style={{ color: "var(--muted)", fontSize: 14, marginBottom: "3rem" }}>
+          {isPt ? "Última atualização: setembro de 2026" : "Last updated: September 2026"}
+        </p>
+
+        {[
+          {
+            h: isPt ? "1. Aceitação dos termos" : "1. Acceptance of terms",
+            p: isPt
+              ? "Ao registares o teu email na lista de espera da MECA, aceitas estes Termos de Serviço. Se não concordares com algum ponto, não deves prosseguir com o registo."
+              : "By registering your email on the MECA waitlist, you accept these Terms of Service. If you do not agree with any point, you should not proceed with registration."
+          },
+          {
+            h: isPt ? "2. Descrição do serviço" : "2. Description of service",
+            p: isPt
+              ? "A MECA é uma plataforma em fase de pré-lançamento que visa ligar músicos, estúdios e venues. O registo na lista de espera não garante acesso imediato à plataforma, mas confere prioridade no lançamento."
+              : "MECA is a pre-launch platform designed to connect musicians, studios, and venues. Registering on the waitlist does not guarantee immediate access to the platform, but grants priority at launch."
+          },
+          {
+            h: isPt ? "3. Elegibilidade" : "3. Eligibility",
+            p: isPt
+              ? "O serviço destina-se a pessoas com 16 ou mais anos de idade. Ao registares-te, confirmas que tens a idade mínima exigida."
+              : "The service is intended for individuals aged 16 or older. By registering, you confirm that you meet the minimum age requirement."
+          },
+          {
+            h: isPt ? "4. Propriedade intelectual" : "4. Intellectual property",
+            p: isPt
+              ? "Todo o conteúdo presente nesta landing page — incluindo logótipo, design, textos e estrutura — é propriedade exclusiva da MECA. É proibida a reprodução, distribuição ou uso comercial sem autorização prévia por escrito."
+              : "All content on this landing page — including the logo, design, texts and structure — is the exclusive property of MECA. Reproduction, distribution or commercial use without prior written authorisation is prohibited."
+          },
+          {
+            h: isPt ? "5. Isenção de responsabilidade (pré-lançamento)" : "5. Disclaimer (pre-launch)",
+            p: isPt
+              ? "A MECA encontra-se em fase de desenvolvimento. A plataforma, as funcionalidades e as condições descritas estão sujeitas a alterações. Não assumimos responsabilidade por eventuais atrasos no lançamento ou alterações de funcionalidades."
+              : "MECA is currently under development. The platform, features, and described conditions are subject to change. We assume no liability for any delays in the launch or changes to features."
+          },
+          {
+            h: isPt ? "6. Conduta do utilizador" : "6. User conduct",
+            p: isPt
+              ? "Ao utilizar qualquer funcionalidade disponível, comprometes-te a não enviar dados falsos, não tentar aceder a sistemas não autorizados e a usar o serviço de forma lícita e respeitosa."
+              : "When using any available feature, you agree not to submit false data, not to attempt to access unauthorised systems, and to use the service lawfully and respectfully."
+          },
+          {
+            h: isPt ? "7. Comunicações" : "7. Communications",
+            p: isPt
+              ? "Ao juntares-te à lista de espera, consentes em receber emails relacionados com o lançamento da MECA. Podes cancelar a subscrição a qualquer momento através do link presente em cada email."
+              : "By joining the waitlist, you consent to receiving emails related to the MECA launch. You may unsubscribe at any time via the link in each email."
+          },
+          {
+            h: isPt ? "8. Lei aplicável" : "8. Governing law",
+            p: isPt
+              ? "Estes Termos são regidos pela lei portuguesa e pela legislação europeia aplicável, incluindo o RGPD."
+              : "These Terms are governed by Portuguese law and applicable European legislation, including the GDPR."
+          },
+          {
+            h: isPt ? "9. Contacto" : "9. Contact",
+            p: isPt
+              ? "Para questões sobre estes Termos, contacta-nos em info@meca-app.com."
+              : "For questions about these Terms, contact us at info@meca-app.com."
+          },
+        ].map(({ h, p }) => (
+          <div key={h} style={{ marginBottom: "2.5rem" }}>
+            <h2 style={{ fontSize: 20, fontWeight: 700, color: "#fff", marginBottom: "0.6rem" }}>{h}</h2>
+            <p style={{ fontSize: 16, color: "var(--muted)", lineHeight: 1.75 }}>{p}</p>
+          </div>
+        ))}
+
+        <div style={{ borderTop: "1px solid var(--border)", paddingTop: "2rem", marginTop: "1rem" }}>
+          <button
+            onClick={onBack}
+            style={{ background: "var(--primary)", border: "none", color: "#000", padding: "0.85rem 2rem", borderRadius: 8, cursor: "pointer", fontSize: 15, fontWeight: 700 }}
+          >
+            ← {isPt ? "Voltar ao início" : "Back to home"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   const [lang, setLang] = useState<"pt" | "en">("pt");
+  const [page, setPage] = useState<"home" | "privacy" | "terms">("home");
   const [howTab, setHowTab] = useState<"artists" | "studios" | "venues" | "fans">("artists");
   const [openAudItems, setOpenAudItems] = useState<Record<string, boolean>>({});
   const [mockupSlide, setMockupSlide] = useState(0);
@@ -1592,6 +1830,18 @@ export default function App() {
     }, 4200);
     return () => window.clearInterval(id);
   }, []);
+
+  // Expose setPage globally so WaitingForm consent links can navigate
+  useEffect(() => {
+    (window as any).__mecaSetPage = (p: "home" | "privacy" | "terms") => {
+      setPage(p);
+      window.scrollTo(0, 0);
+    };
+    return () => { delete (window as any).__mecaSetPage; };
+  }, []);
+
+  if (page === "privacy") return <PrivacyPage lang={lang} onBack={() => { setPage("home"); window.scrollTo(0, 0); }} />;
+  if (page === "terms") return <TermsPage lang={lang} onBack={() => { setPage("home"); window.scrollTo(0, 0); }} />;
 
   const handleScrollToBottom = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -2248,6 +2498,20 @@ export default function App() {
         <div className="footer-bar">
           <img className="footer-logo" src="/meca-logo.png" alt="MECA" />
           <span className="footer-tag">{s("footerTag")}</span>
+          <div style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
+            <button
+              onClick={() => { setPage("privacy"); window.scrollTo(0, 0); }}
+              style={{ background: "none", border: "none", color: "var(--muted)", fontSize: 13, cursor: "pointer", padding: 0, fontFamily: "inherit" }}
+            >
+              {lang === "pt" ? "Privacidade" : "Privacy"}
+            </button>
+            <button
+              onClick={() => { setPage("terms"); window.scrollTo(0, 0); }}
+              style={{ background: "none", border: "none", color: "var(--muted)", fontSize: 13, cursor: "pointer", padding: 0, fontFamily: "inherit" }}
+            >
+              {lang === "pt" ? "Termos" : "Terms"}
+            </button>
+          </div>
         </div>
 
       </div>
