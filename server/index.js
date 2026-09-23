@@ -119,6 +119,10 @@ app.post('/waitlist', waitlistLimiter, async (req, res) => {
     .insert({ name: name.trim(), email: email.trim().toLowerCase(), role });
 
   if (error) {
+    // 23505 = unique_violation (duplicate email)
+    if (error.code === '23505') {
+      return res.status(409).json({ error: 'email_already_registered' });
+    }
     console.error('Supabase insert failed:', error);
     return res.status(502).json({ error: 'Failed to store submission' });
   }

@@ -1399,6 +1399,8 @@ function WaitingForm({ lang, dark }: WaitingFormProps) {
   const [role, setRole] = useState("");
   const [consent, setConsent] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [formError, setFormError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Sync state between any waitlist forms on the page
   useEffect(() => {
@@ -1418,9 +1420,12 @@ function WaitingForm({ lang, dark }: WaitingFormProps) {
     return () => window.removeEventListener("meca_waitlist_update", handleUpdate);
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
+
+    setFormError("");
+    setIsSubmitting(true);
 
     const baseNum = 2482;
     const offset = Math.floor(Math.random() * 9) + 1;
@@ -1435,6 +1440,34 @@ function WaitingForm({ lang, dark }: WaitingFormProps) {
     };
 
     try {
+      const res = await fetch("https://api.meca-app.com/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: newTicket.name,
+          email: newTicket.email,
+          role: newTicket.role
+        })
+      });
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        if (res.status === 409 || body.error === "email_already_registered") {
+          setFormError(lang === "pt" ? "Este email já está registado." : "This email is already registered.");
+        } else {
+          setFormError(lang === "pt" ? "Ocorreu um erro. Tenta novamente." : "An error occurred. Please try again.");
+        }
+        setIsSubmitting(false);
+        return;
+      }
+    } catch (err) {
+      console.error("Waitlist submission failed to reach the server:", err);
+      setFormError(lang === "pt" ? "Não foi possível conectar ao servidor. Tenta novamente." : "Could not reach the server. Please try again.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
       localStorage.setItem("meca_waitlist_ticket", JSON.stringify(newTicket));
       setTicket(newTicket);
       window.dispatchEvent(new Event("meca_waitlist_update"));
@@ -1442,17 +1475,7 @@ function WaitingForm({ lang, dark }: WaitingFormProps) {
       console.error(err);
     }
 
-    fetch("https://api.meca-app.com/waitlist", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: newTicket.name,
-        email: newTicket.email,
-        role: newTicket.role
-      })
-    }).catch((err) => {
-      console.error("Waitlist submission failed to reach the server:", err);
-    });
+    setIsSubmitting(false);
   };
 
   const handleCopyLink = () => {
@@ -1597,12 +1620,20 @@ function WaitingForm({ lang, dark }: WaitingFormProps) {
 
         <button
           className="waiting-btn"
-          style={{ width: '100%', marginTop: '1rem', display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em', opacity: consent ? 1 : 0.45, cursor: consent ? 'pointer' : 'not-allowed', transition: 'opacity 0.2s' }}
+          style={{ width: '100%', marginTop: '1rem', display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em', opacity: (consent && !isSubmitting) ? 1 : 0.45, cursor: (consent && !isSubmitting) ? 'pointer' : 'not-allowed', transition: 'opacity 0.2s' }}
           type="submit"
-          disabled={!consent}
+          disabled={!consent || isSubmitting}
         >
-          {t(lang, "cta")}
+          {isSubmitting
+            ? (lang === 'pt' ? 'A registar…' : 'Registering…')
+            : t(lang, "cta")}
         </button>
+
+        {formError && (
+          <p style={{ marginTop: '0.75rem', fontSize: '12px', color: '#ff6b6b', textAlign: 'center', lineHeight: 1.4 }}>
+            {formError}
+          </p>
+        )}
       </form>
     </div>
   );
