@@ -1422,7 +1422,7 @@ function WaitingForm({ lang, dark }: WaitingFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    if (!email || !consent || isSubmitting) return;
 
     setFormError("");
     setIsSubmitting(true);
@@ -1439,6 +1439,16 @@ function WaitingForm({ lang, dark }: WaitingFormProps) {
       referrals: 0
     };
 
+    const persistTicket = () => {
+      try {
+        localStorage.setItem("meca_waitlist_ticket", JSON.stringify(newTicket));
+        setTicket(newTicket);
+        window.dispatchEvent(new Event("meca_waitlist_update"));
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
     try {
       const res = await fetch("https://api.meca-app.com/waitlist", {
         method: "POST",
@@ -1447,13 +1457,20 @@ function WaitingForm({ lang, dark }: WaitingFormProps) {
           name: newTicket.name,
           email: newTicket.email,
           role: newTicket.role
-        })
+        }),
+        signal: AbortSignal.timeout(10_000)
       });
 
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
         if (res.status === 409 || body.error === "email_already_registered") {
-          setFormError(lang === "pt" ? "Este email já está registado." : "This email is already registered.");
+          // Already registered — restore their ticket instead of blocking them.
+          setIsSubmitting(false);
+          persistTicket();
+          return;
+        }
+        if (res.status === 429) {
+          setFormError(lang === "pt" ? "Demasiadas tentativas. Aguarda um minuto e volta a tentar." : "Too many attempts. Please wait a minute and try again.");
         } else {
           setFormError(lang === "pt" ? "Ocorreu um erro. Tenta novamente." : "An error occurred. Please try again.");
         }
@@ -1467,14 +1484,7 @@ function WaitingForm({ lang, dark }: WaitingFormProps) {
       return;
     }
 
-    try {
-      localStorage.setItem("meca_waitlist_ticket", JSON.stringify(newTicket));
-      setTicket(newTicket);
-      window.dispatchEvent(new Event("meca_waitlist_update"));
-    } catch (err) {
-      console.error(err);
-    }
-
+    persistTicket();
     setIsSubmitting(false);
   };
 
@@ -1494,6 +1504,7 @@ function WaitingForm({ lang, dark }: WaitingFormProps) {
       setEmail("");
       setRole("");
       setConsent(false);
+      setFormError("");
       window.dispatchEvent(new Event("meca_waitlist_update"));
     } catch (err) {
       console.error(err);
@@ -1562,7 +1573,7 @@ function WaitingForm({ lang, dark }: WaitingFormProps) {
             type="text"
             placeholder={lang === 'pt' ? "ex: Pedro Silva" : "e.g.: Peter Smith"}
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => { setName(e.target.value); setFormError(""); }}
             required
           />
         </div>
@@ -1575,14 +1586,14 @@ function WaitingForm({ lang, dark }: WaitingFormProps) {
             type="email"
             placeholder={t(lang, "placeholder")}
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => { setEmail(e.target.value); setFormError(""); }}
             required
           />
         </div>
 
         <div className="wl-field-group">
           <label className="wl-label">{t(lang, "waitlistRole")}</label>
-          <select className="wl-select" value={role} onChange={(e) => setRole(e.target.value)} required>
+          <select className="wl-select" value={role} onChange={(e) => { setRole(e.target.value); setFormError(""); }} required>
             <option value="">{t(lang, "waitlistSelectRole")}</option>
             <option value="roleArtist">{t(lang, "roleArtist")}</option>
             <option value="roleStudio">{t(lang, "roleStudio")}</option>

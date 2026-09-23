@@ -1,5 +1,8 @@
-@import "tailwindcss";
+/* Remote font imports must come first: the Tailwind v4 plugin inlines
+   `@import "tailwindcss"` in place, so any @import after it would end up
+   after all of Tailwind's rules — which CSS forbids. */
 @import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;700;900&family=Inter:wght@300;400;600;700&display=swap');
+@import "tailwindcss";
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
